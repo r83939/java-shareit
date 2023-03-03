@@ -71,7 +71,5 @@ public class UserController {
         }
 
         return userMapper.toUserDto(userServiceImpl.deleteUser(id));
-
     }
-
 }

@@ -1,9 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
@@ -12,7 +10,6 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +30,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItem(@PathVariable long id) {
+    public ItemDto getItem(@PathVariable long id) throws EntityNotFoundException {
 
         return itemMapper.toItemDto(itemServiceImpl.getItemById(id));
     }
@@ -53,12 +50,12 @@ public class ItemController {
         return itemMapper.toItemDto(itemServiceImpl.addItem(userId, item));
     }
 
-    @PutMapping()
+    @PatchMapping("/{id}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                              @PathVariable long itemId,
+                              @PathVariable long id,
                               @RequestBody Item item) throws EntityNotFoundException, AccessDeniedException {
 
-        item.setId(itemId);
+        item.setId(id);
         return itemMapper.toItemDto(itemServiceImpl.updateItem(userId, item));
     }
 
@@ -74,7 +71,5 @@ public class ItemController {
         return itemServiceImpl.searchItems(userId, text).stream()
                 .map(u -> itemMapper.toItemDto(u))
                 .collect(Collectors.toList());
-
     }
-
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ItemService {
 
-    Item getItemById(long itemId);
+    Item getItemById(long itemId) throws EntityNotFoundException;
 
     List<Item> getAllItems();
 

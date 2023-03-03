@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.repository.UserRepositoryImpl;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +30,12 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Item getItemById(long itemId) {
-        return null;
+    public Item getItemById(long itemId) throws EntityNotFoundException {
+        Item item = itemRepositoryImpl.getOne(itemId);
+        if (item == null) {
+            throw new EntityNotFoundException("Не найдено позиции с id: " + itemId);
+        }
+        return item;
     }
 
     @Override
@@ -58,10 +63,10 @@ public class ItemServiceImpl implements ItemService{
             throw new AccessDeniedException("У пользователя с id: " + userId +
                     " нет прав на редактирование позиции с id: " + item.getId());
         }
-        if (!item.getName().isBlank()) {
+        if (item.getName() != null ) {
             updateItem.setName(item.getName());
         }
-        if (!item.getDescription().isBlank()) {
+        if (item.getDescription() != null ) {
             updateItem.setDescription(item.getDescription());
         }
         if (item.getAvailable() != null) {
@@ -80,9 +85,12 @@ public class ItemServiceImpl implements ItemService{
         if (!userRepositoryImpl.isUserExist(userId)) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        }
         return itemRepositoryImpl.getAll().stream()
-                .filter(i -> i.getName().contains(text))
-                .filter(i -> i.getDescription().contains(text))
+                .filter(i -> (i.getName().toLowerCase().contains(text.toLowerCase()) && i.getAvailable() == true)
+                        || (i.getDescription().toLowerCase().contains(text.toLowerCase()) && i.getAvailable() == true))
                 .collect(Collectors.toList());
     }
 
