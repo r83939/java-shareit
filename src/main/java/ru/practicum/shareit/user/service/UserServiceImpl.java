@@ -1,17 +1,18 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateEmailException;
-import ru.practicum.shareit.exception.EntityAlreadyExistException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.repository.UserRepositoryImpl;
 
 import java.util.List;
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepositoryImpl userRepositoryImpl;
 
     @Autowired

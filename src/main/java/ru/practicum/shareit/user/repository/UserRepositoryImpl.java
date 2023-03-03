@@ -1,7 +1,9 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +34,10 @@ public class UserRepositoryImpl implements UserRepository {
             }
         }
         return false;
+    }
+
+    public boolean isUserExist(long userId) {
+       return users.containsKey(userId);
     }
 
     @Override
