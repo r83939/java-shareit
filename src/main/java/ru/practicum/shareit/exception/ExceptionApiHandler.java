@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionApiHandler {
 
     @ExceptionHandler(InvalidParameterException.class)
-    public ResponseEntity<ErrorMessage> InvalidParameterException(InvalidParameterException exception) {
+    public ResponseEntity<ErrorMessage> invalidParameterException(InvalidParameterException exception) {
         log.error(exception.getMessage(), exception);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -20,7 +20,7 @@ public class ExceptionApiHandler {
 
 
     @ExceptionHandler(EntityAlreadyExistException.class)
-    public ResponseEntity<ErrorMessage> EntityAlreadyExistException(EntityAlreadyExistException exception) {
+    public ResponseEntity<ErrorMessage> entityAlreadyExistException(EntityAlreadyExistException exception) {
         log.error(exception.getMessage(), exception);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -28,7 +28,7 @@ public class ExceptionApiHandler {
     }
 
     @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ErrorMessage> DuplicateEmailException(DuplicateEmailException exception) {
+    public ResponseEntity<ErrorMessage> duplicateEmailException(DuplicateEmailException exception) {
         log.error(exception.getMessage(), exception);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
@@ -36,7 +36,7 @@ public class ExceptionApiHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorMessage> EntityNotFoundException(EntityNotFoundException exception) {
+    public ResponseEntity<ErrorMessage> entityNotFoundException(EntityNotFoundException exception) {
         log.error(exception.getMessage(), exception);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -44,7 +44,7 @@ public class ExceptionApiHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorMessage> AccessDeniedException(AccessDeniedException exception) {
+    public ResponseEntity<ErrorMessage> accessDeniedException(AccessDeniedException exception) {
         log.error(exception.getMessage(), exception);
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)

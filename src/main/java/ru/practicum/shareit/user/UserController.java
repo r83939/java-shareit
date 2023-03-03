@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public UserDto createUser( @RequestBody  @Valid User user) throws DuplicateEmailException , InvalidParameterException{
+    public UserDto createUser(@RequestBody  @Valid User user) throws DuplicateEmailException, InvalidParameterException {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new InvalidParameterException("поле email должно быть заполнено.");
         }
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser( @PathVariable Long id,
+    public UserDto updateUser(@PathVariable Long id,
                                @RequestBody @Valid User user) throws EntityNotFoundException, DuplicateEmailException {
         user.setId(id);
         return  userMapper.toUserDto(userServiceImpl.updateUser(user));

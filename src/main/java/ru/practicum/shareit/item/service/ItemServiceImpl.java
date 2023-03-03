@@ -9,7 +9,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepositoryImpl;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.repository.UserRepositoryImpl;
-import ru.practicum.shareit.user.service.UserServiceImpl;
 
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class ItemServiceImpl implements ItemService{
+public class ItemServiceImpl implements ItemService {
 
     private final ItemRepositoryImpl itemRepositoryImpl;
     private final UserRepositoryImpl userRepositoryImpl;
@@ -57,16 +56,16 @@ public class ItemServiceImpl implements ItemService{
     public Item updateItem(long userId, Item item) throws EntityNotFoundException, AccessDeniedException {
         Item updateItem = itemRepositoryImpl.getOne(item.getId());
         if (updateItem == null) {
-            throw new EntityNotFoundException("Позиция с id: " + item.getId() + "не найдена." );
+            throw new EntityNotFoundException("Позиция с id: " + item.getId() + "не найдена.");
         }
         if (updateItem.getOwner().getId() != userId) {
             throw new AccessDeniedException("У пользователя с id: " + userId +
                     " нет прав на редактирование позиции с id: " + item.getId());
         }
-        if (item.getName() != null ) {
+        if (item.getName() != null) {
             updateItem.setName(item.getName());
         }
-        if (item.getDescription() != null ) {
+        if (item.getDescription() != null) {
             updateItem.setDescription(item.getDescription());
         }
         if (item.getAvailable() != null) {
@@ -96,7 +95,7 @@ public class ItemServiceImpl implements ItemService{
 
     public List<Item> getAllItemsByUserId(long userId) {
         return itemRepositoryImpl.getAll().stream()
-                .filter(i -> i.getOwner().getId() == userId )
+                .filter(i -> i.getOwner().getId() == userId)
                 .collect(Collectors.toList());
     }
 }

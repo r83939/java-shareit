@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Repository
 @Slf4j
-public class ItemRepositoryImpl implements ItemRepository{
+public class ItemRepositoryImpl implements ItemRepository {
 
     private Map<Long, Item> items;
 

@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(User user) throws DuplicateEmailException {
-        if (userRepositoryImpl.isEmailExist(user.getEmail())){
+        if (userRepositoryImpl.isEmailExist(user.getEmail())) {
             throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется");
         }
         return userRepositoryImpl.save(user);
