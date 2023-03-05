@@ -12,7 +12,6 @@ import ru.practicum.shareit.item.service.ItemServiceImpl;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -21,33 +20,29 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemServiceImpl itemServiceImpl;
-    private final ItemMapper itemMapper;
 
     @Autowired
-    public ItemController(ItemServiceImpl itemServiceImpl, ItemMapper itemMapper) {
+    public ItemController(ItemServiceImpl itemServiceImpl) {
         this.itemServiceImpl = itemServiceImpl;
-        this.itemMapper = itemMapper;
     }
 
     @GetMapping("/{id}")
     public ItemDto getItem(@PathVariable long id) throws EntityNotFoundException {
 
-        return itemMapper.toItemDto(itemServiceImpl.getItemById(id));
+        return itemServiceImpl.getItemById(id);
     }
 
     @GetMapping()
     public List<ItemDto> getAllItem(@RequestHeader("X-Sharer-User-Id") Long userId) {
 
-        return itemServiceImpl.getAllItemsByUserId(userId).stream()
-                .map(u -> itemMapper.toItemDto(u))
-                .collect(Collectors.toList());
+        return itemServiceImpl.getAllItemsByUserId(userId);
     }
 
     @PostMapping()
     public ItemDto createItem(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
                               @Valid @RequestBody Item item) throws EntityNotFoundException {
 
-        return itemMapper.toItemDto(itemServiceImpl.addItem(userId, item));
+        return itemServiceImpl.addItem(userId, item);
     }
 
     @PatchMapping("/{id}")
@@ -56,7 +51,7 @@ public class ItemController {
                               @RequestBody Item item) throws EntityNotFoundException, AccessDeniedException {
 
         item.setId(id);
-        return itemMapper.toItemDto(itemServiceImpl.updateItem(userId, item));
+        return itemServiceImpl.updateItem(userId, item);
     }
 
     @DeleteMapping("/{id}")
@@ -68,8 +63,7 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
                                      @RequestParam(value = "text", required = true) String text) throws EntityNotFoundException {
-        return itemServiceImpl.searchItems(userId, text).stream()
-                .map(u -> itemMapper.toItemDto(u))
-                .collect(Collectors.toList());
+
+        return itemServiceImpl.searchItems(userId, text);
     }
 }

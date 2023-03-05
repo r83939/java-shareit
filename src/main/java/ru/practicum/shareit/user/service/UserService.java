@@ -3,18 +3,20 @@ package ru.practicum.shareit.user.service;
 import ru.practicum.shareit.exception.DuplicateEmailException;
 import ru.practicum.shareit.exception.EntityAlreadyExistException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.exception.InvalidParameterException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
 public interface UserService {
-    User getUserById(long userId);
+    UserDto getUserById(long userId);
 
-    List<User> getAllUsers();
+    List<UserDto> getAllUsers();
 
-    User addUser(User user) throws EntityAlreadyExistException, DuplicateEmailException;
+    UserDto addUser(User user) throws EntityAlreadyExistException, DuplicateEmailException, InvalidParameterException;
 
-    User updateUser(User user) throws EntityAlreadyExistException, EntityNotFoundException, DuplicateEmailException;
+    UserDto updateUser(User user) throws EntityAlreadyExistException, EntityNotFoundException, DuplicateEmailException;
 
-    User deleteUser(long userId);
+    UserDto deleteUser(long userId) throws InvalidParameterException;
 }
