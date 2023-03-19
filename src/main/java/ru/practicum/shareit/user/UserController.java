@@ -10,6 +10,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
 
+
 import javax.validation.Valid;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public UserDto deleteUser(@PathVariable Long id) throws InvalidParameterException {
+    public UserDto deleteUser(@PathVariable Long id) throws InvalidParameterException, EntityNotFoundException {
 
         return userServiceImpl.deleteUser(id);
     }

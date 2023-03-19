@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.item.dto.CommentResponceDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.service.CommentServiceImpl;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
 import javax.validation.Valid;
@@ -19,10 +21,12 @@ import java.util.List;
 public class ItemController {
 
     private final ItemServiceImpl itemServiceImpl;
+    private final CommentServiceImpl commentServiceImpl;
 
     @Autowired
-    public ItemController(ItemServiceImpl itemServiceImpl) {
+    public ItemController(ItemServiceImpl itemServiceImpl, CommentServiceImpl commentServiceImpl) {
         this.itemServiceImpl = itemServiceImpl;
+        this.commentServiceImpl = commentServiceImpl;
     }
 
     @GetMapping("/{id}")
@@ -65,4 +69,13 @@ public class ItemController {
 
         return itemServiceImpl.searchItems(userId, text);
     }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentResponceDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                         @PathVariable long itemId) {
+        return commentServiceImpl.addComment(userId, itemId);
+    }
+
+
+
 }

@@ -1,17 +1,14 @@
 package ru.practicum.shareit.item.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.List;
+@Repository
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
-public interface ItemRepository {
-
-    List<Item> getAll();
-
-    Item getOne(long itemId);
-
-    Item save(Item item);
-
-    Item delete(long itemId);
-
+   // @Query("SELECT i.user_id FROM items i where i.id = :id")
+   // long findUserIdById(@Param("id") Long id);
 }
