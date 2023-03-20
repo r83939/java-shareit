@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-   // @Query("SELECT i.user_id FROM items i where i.id = :id")
-   // long findUserIdById(@Param("id") Long id);
+   @Query(value = "SELECT i.user_id FROM items i where i.id = :id",
+           nativeQuery = true)
+   long findUserIdById(@Param("id") Long id);
 }

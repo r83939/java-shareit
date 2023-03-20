@@ -68,9 +68,9 @@ public class BookingServiceImpl {
         if (booking.isEmpty()) {
             throw new EntityNotFoundException("Нет бронирования с id: " + bookingId);
         }
-        //if (itemRepo.findUserIdById(booking.get().getItem().getId()) != userId) {
-        //    throw new InvalidParameterException("Вы не можете изменить статус этого бронирования");
-       // }
+        if (itemRepo.findUserIdById(booking.get().getItem().getId()) != userId) {
+           throw new InvalidParameterException("Вы не можете изменить статус этого бронирования");
+        }
         if (approved.equals("true")) {
             booking.get().setStatus(Status.APPROVED);
             return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));

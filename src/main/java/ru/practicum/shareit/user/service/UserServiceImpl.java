@@ -62,7 +62,7 @@ public class UserServiceImpl {
         if ((user.getName() == null || user.getName().isBlank())) {
             user.setName(updateUser.get().getName());
         }
-        if (!updateUser.get().getEmail().equals(user.getEmail()) && (userRepo.existsByEmail(user.getEmail()) != null)) {
+        if (!updateUser.get().getEmail().equals(user.getEmail()) && (userRepo.existsByEmail(user.getEmail()))) {
             throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется другим пользователем");
         }
 
