@@ -19,7 +19,7 @@ public class User {
     @Column(name = "name")
     private String name;                                // имя или логин пользователя
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     @Email(message = "Отсутствует email или неверный формат")
     private String email;                              // уникальный адрес электронной почты
 }

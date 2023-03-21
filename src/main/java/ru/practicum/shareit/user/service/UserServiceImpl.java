@@ -28,7 +28,10 @@ public class UserServiceImpl {
         this.userMapper = userMapper;
     }
 
-    public UserDto getUserById(long userId) {
+    public UserDto getUserById(long userId) throws EntityNotFoundException {
+        if (userRepo.findById(userId).isEmpty()) {
+            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
+        }
         return userMapper.toUserDto(userRepo.findById(userId).get());
     }
 
@@ -45,9 +48,9 @@ public class UserServiceImpl {
         if (user.getName() == null || user.getName().isBlank()) {
             throw new InvalidParameterException("поле name должно быть заполнено.");
         }
-        if (userRepo.existsByEmail(user.getEmail())) {
-            throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется");
-        }
+        //if (userRepo.existsByEmail(user.getEmail())) {
+        //    throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется");
+        //}
         return userMapper.toUserDto(userRepo.save(user));
     }
 

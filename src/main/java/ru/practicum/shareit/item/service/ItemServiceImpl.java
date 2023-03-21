@@ -40,7 +40,7 @@ public class ItemServiceImpl {
     }
 
     public ItemDto addItem(long userId,  Item item) throws EntityNotFoundException {
-        Optional<Item> user = itemRepo.findById(userId);
+        Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
@@ -74,6 +74,7 @@ public class ItemServiceImpl {
         return null;
     }
 
+    /*
     public List<ItemDto> searchItems(Long userId, String text) throws EntityNotFoundException {
         if (!userRepo.existsById(userId)) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
@@ -94,6 +95,33 @@ public class ItemServiceImpl {
                 .map(i -> itemMapper.toItemDto(i))
                 .collect(Collectors.toList());
     }
+    */
+
+
+    public List<ItemDto> searchItems(Long userId, String text) throws EntityNotFoundException {
+        if (!userRepo.existsById(userId)) {
+            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
+        }
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        }
+        return itemRepo.findAll().stream()
+                .filter(i -> (i.getName().toLowerCase().contains(text.toLowerCase()) && i.getAvailable() == true)
+                        || (i.getDescription().toLowerCase().contains(text.toLowerCase()) && i.getAvailable() == true))
+                .map(i -> itemMapper.toItemDto(i))
+                .collect(Collectors.toList());
+    }
+
+    public List<ItemDto> getAllItemsByUserId(long userId) {
+        return itemRepo.findAll().stream()
+                .filter(i -> i.getOwner() == userId)
+                .map(i -> itemMapper.toItemDto(i))
+                .collect(Collectors.toList());
+    }
+
+
+
+
 
 
 
