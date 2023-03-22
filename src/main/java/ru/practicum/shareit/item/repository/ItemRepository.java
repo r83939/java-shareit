@@ -16,9 +16,15 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
            nativeQuery = true)
    long findUserIdById(@Param("id") Long id);
 
-   List<Item> findAllByUserIdAndNameContaining(@Param("id") Long id, String text);
+   @Query(value = "SELECT * FROM items i " +
+           "WHERE i.available = :available " +
+           "AND (LOWER(i.name) like LOWER(concat('%', concat(:text, '%'))) OR LOWER(i.description) like LOWER(concat('%', concat(:text, '%')))) ",
+           nativeQuery = true)
+   List<Item> search(@Param("text") String text,
+                     @Param("available") boolean available);
 
-   List<Item> findAllByUserId(@Param("id") Long id);
+
+   List<Item> findAllByOwner(@Param("id") Long id);
 
 
 

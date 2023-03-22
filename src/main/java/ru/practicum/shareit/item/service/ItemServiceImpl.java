@@ -105,16 +105,13 @@ public class ItemServiceImpl {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepo.findAll().stream()
-                .filter(i -> (i.getName().toLowerCase().contains(text.toLowerCase()) && i.getAvailable() == true)
-                        || (i.getDescription().toLowerCase().contains(text.toLowerCase()) && i.getAvailable() == true))
+        return itemRepo.search(text, true).stream()
                 .map(i -> itemMapper.toItemDto(i))
                 .collect(Collectors.toList());
     }
 
     public List<ItemDto> getAllItemsByUserId(long userId) {
-        return itemRepo.findAll().stream()
-                .filter(i -> i.getOwner() == userId)
+        return itemRepo.findAllByOwner(userId).stream()
                 .map(i -> itemMapper.toItemDto(i))
                 .collect(Collectors.toList());
     }

@@ -39,7 +39,7 @@ public class BookingServiceImpl {
     }
 
 
-    public BookingResponceDto addBooking(Long userId, BookingRequestDto bookingRequestDto) throws EntityNotFoundException {
+    public BookingResponceDto addBooking(Long userId, BookingRequestDto bookingRequestDto) throws EntityNotFoundException, InvalidParameterException {
 
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
@@ -48,6 +48,9 @@ public class BookingServiceImpl {
         Optional<Item> item = itemRepo.findById(bookingRequestDto.getItemId());
         if (item.isEmpty()) {
             throw new EntityNotFoundException("Нет позиции с id: " + bookingRequestDto.getItemId());
+        }
+        if (!item.get().getAvailable()) {
+            throw new InvalidParameterException("Позиция с id: " + item.get().getId() + " недоступна для бронирования.");
         }
         Booking booking = new Booking();
         booking.setItem(item.get());
