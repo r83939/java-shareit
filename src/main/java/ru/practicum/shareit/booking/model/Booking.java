@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.domain.validator.BookingDateEmpty;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -17,8 +18,10 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;              // уникальный идентификатор бронирования
 
+
     @Column(name="start_date")
     private Date start;           // дата и время начала бронирования
+
 
     @Column(name="end_date")
     private Date end;             // дата и время конца бронирования

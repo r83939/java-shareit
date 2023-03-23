@@ -52,6 +52,9 @@ public class BookingServiceImpl {
         if (!item.get().getAvailable()) {
             throw new InvalidParameterException("Позиция с id: " + item.get().getId() + " недоступна для бронирования.");
         }
+        if (bookingRequestDto.getEnd().before(bookingRequestDto.getStart())) {
+            throw new InvalidParameterException("Неверно указано время бронирования");
+        }
         Booking booking = new Booking();
         booking.setItem(item.get());
         booking.setBooker(user.get());
