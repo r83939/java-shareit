@@ -55,6 +55,10 @@ public class BookingServiceImpl {
         if (bookingRequestDto.getEnd().before(bookingRequestDto.getStart())) {
             throw new InvalidParameterException("Неверно указано время бронирования");
         }
+        if (bookingRequestDto.getEnd().equals(bookingRequestDto.getStart())) {
+            throw new InvalidParameterException("Время окончания бронирования не должно совпадать с временем начала.");
+        }
+
         Booking booking = new Booking();
         booking.setItem(item.get());
         booking.setBooker(user.get());

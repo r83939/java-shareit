@@ -4,17 +4,22 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.domain.validator.BookingDateEmpty;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.util.Date;
 
 @Getter
 @Setter
 public class BookingRequestDto {
 
-    @NotNull
+
+    @Future
+    @BookingDateEmpty(message = "Не указана дата начала бронирования")
     private Date start;           // дата и время начала бронирования
 
-    @NotNull
+    @Future
+    @BookingDateEmpty(message = "Не указана дата окончания бронирования")
     private Date end;             // дата и время конца бронирования
 
     private long itemId;            // вещь, которую пользователь бронирует
