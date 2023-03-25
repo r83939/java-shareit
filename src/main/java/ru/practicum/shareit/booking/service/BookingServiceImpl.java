@@ -52,7 +52,7 @@ public class BookingServiceImpl {
         if (!item.get().getAvailable()) {
             throw new InvalidParameterException("Позиция с id: " + item.get().getId() + " недоступна для бронирования.");
         }
-        if (bookingRequestDto.getEnd().before(bookingRequestDto.getStart())) {
+        if (bookingRequestDto.getEnd().isBefore(bookingRequestDto.getStart())) {
             throw new InvalidParameterException("Неверно указано время бронирования");
         }
         if (bookingRequestDto.getEnd().equals(bookingRequestDto.getStart())) {
@@ -62,6 +62,8 @@ public class BookingServiceImpl {
         Booking booking = new Booking();
         booking.setItem(item.get());
         booking.setBooker(user.get());
+        booking.setStart(bookingRequestDto.getStart());
+        booking.setEnd(bookingRequestDto.getEnd());
         return BookingMapper.toBookingResponceDto(bookingRepo.save(booking));
     }
 
@@ -83,11 +85,11 @@ public class BookingServiceImpl {
         }
         if (approved.equals("true")) {
             booking.get().setStatus(Status.APPROVED);
-            return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
+            return BookingMapper.toApproveBookingResponceDto(bookingRepo.save(booking.get()));
         }
         if (approved.equals("false")) {
             booking.get().setStatus(Status.REJECTED);
-            return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
+            return BookingMapper.toApproveBookingResponceDto(bookingRepo.save(booking.get()));
         }
         throw new InvalidParameterException("Указан неверный параметр: approved");
     }

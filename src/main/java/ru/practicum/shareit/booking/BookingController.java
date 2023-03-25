@@ -36,11 +36,13 @@ public class BookingController {
         return bookingServiceImpl.addBooking(userId, booking);
     }
 
-    @PatchMapping("/{bookingId}?approved={approved}")
+    @PatchMapping("/{bookingId}")
     public BookingResponceDto approveBooking(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
                                             @PathVariable long bookingId,
                                             @RequestParam(value = "approved", required = true) String approved) throws InvalidParameterException, EntityNotFoundException {
-        return bookingServiceImpl.approveBooking(userId, bookingId ,approved );
+        BookingResponceDto brd = bookingServiceImpl.approveBooking(userId, bookingId ,approved );
+        //return bookingServiceImpl.approveBooking(userId, bookingId ,approved );
+        return brd;
     }
 
     @GetMapping()

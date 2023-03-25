@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -20,17 +21,17 @@ public class Booking {
 
 
     @Column(name="start_date")
-    private Date start;           // дата и время начала бронирования
+    private LocalDateTime start;           // дата и время начала бронирования
 
 
     @Column(name="end_date")
-    private Date end;             // дата и время конца бронирования
+    private LocalDateTime end;             // дата и время конца бронирования
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     private Item item;            // вещь, которую пользователь бронирует
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "booker_id")
     private User booker;          // пользователь, который осуществляет бронирование
 
