@@ -50,7 +50,7 @@ public class BookingServiceImpl {
         if (booking.isEmpty()) {
             throw new EntityNotFoundException("Нет бронирования с id: " + bookingId);
         }
-        if ((booking.get().getItem().getOwner() == userId) || (booking.get().getBooker().getId() == userId)) {
+        if ((booking.get().getItem().getOwner().getId() == userId) || (booking.get().getBooker().getId() == userId)) {
             return BookingMapper.toBookingResponceDto(booking.get());
         }
         throw new EntityNotFoundException("");
@@ -67,7 +67,7 @@ public class BookingServiceImpl {
         if (item.isEmpty()) {
             throw new EntityNotFoundException("Нет позиции с id: " + bookingRequestDto.getItemId());
         }
-        if (item.get().getOwner() == user.get().getId()) {
+        if (item.get().getOwner().getId() == user.get().getId()) {
             throw new EntityNotFoundException("Пользователь не может бронировать собвственную вещь");
         }
         if (!item.get().getAvailable()) {

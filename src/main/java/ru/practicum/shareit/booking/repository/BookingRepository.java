@@ -25,4 +25,17 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "ORDER BY b.start_date DESC ",
             nativeQuery = true)
     List<Booking> findBookingByOwnerId(@Param("user_id") Long userId);
+
+    @Query(value = "SELECT * FROM bookings b " +
+            "WHERE item_id = :item_id " +
+            "AND end_date < CURRENT_TIMESTAMP " +
+            "ORDER BY end_date DESC LIMIT 1" ,nativeQuery = true)
+    Booking getLastBookingByItemId(@Param("item_id") Long ItemId);
+
+    @Query(value = "SELECT * FROM bookings b " +
+            "WHERE item_id = :item_id " +
+            "AND start_date > CURRENT_TIMESTAMP " +
+            "ORDER BY start_date ASC LIMIT 1" ,nativeQuery = true)
+    Booking getNextBookingByItemId(@Param("item_id") Long ItemId);
+
 }

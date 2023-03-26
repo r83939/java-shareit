@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.dto.CommentResponceDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemRequestDto;
+import ru.practicum.shareit.item.dto.ItemResponceDto;
+import ru.practicum.shareit.item.dto.ItemWithBookingResponceDto;
 import ru.practicum.shareit.item.service.CommentServiceImpl;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
@@ -30,28 +31,29 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItem(@PathVariable long id) throws EntityNotFoundException {
+    public ItemWithBookingResponceDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                              @PathVariable long id) throws EntityNotFoundException {
 
-        return itemServiceImpl.getItemById(id);
+        return itemServiceImpl.getItemById(userId, id);
     }
 
     @GetMapping()
-    public List<ItemDto> getAllItem(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemWithBookingResponceDto> getAllItem(@RequestHeader("X-Sharer-User-Id") Long userId) {
 
         return itemServiceImpl.getAllItemsByUserId(userId);
     }
 
     @PostMapping()
-    public ItemDto createItem(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
-                              @Valid @RequestBody Item item) throws EntityNotFoundException {
+    public ItemResponceDto createItem(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+                              @Valid @RequestBody ItemRequestDto item) throws EntityNotFoundException {
 
         return itemServiceImpl.addItem(userId, item);
     }
 
     @PatchMapping("/{id}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemResponceDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @PathVariable long id,
-                              @RequestBody Item item) throws EntityNotFoundException, AccessDeniedException {
+                              @RequestBody ItemRequestDto item) throws EntityNotFoundException, AccessDeniedException {
 
         item.setId(id);
         return itemServiceImpl.updateItem(userId, item);
@@ -64,7 +66,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<ItemResponceDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
                                      @RequestParam(value = "text", required = true) String text) throws EntityNotFoundException {
 
         return itemServiceImpl.searchItems(userId, text);

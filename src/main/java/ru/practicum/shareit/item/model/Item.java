@@ -30,8 +30,9 @@ public class Item {
     @Column(name="available")
     private Boolean available;    // статус о том, доступна или нет вещь для аренды
 
-    @Column(name="user_id")
-    private long owner;           // владелец вещи
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User owner;           // владелец вещи
 
     @Column(name="request_id")
     private long request;        // ссылка на запрос от другого пользователя на создание вещи

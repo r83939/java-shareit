@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ErrorMessage {
-    @JsonProperty("Error message")
+    @JsonProperty("error")
     private String message;
 }
