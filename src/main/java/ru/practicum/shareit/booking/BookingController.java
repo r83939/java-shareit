@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingResponceDto;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidParameterException;
+import ru.practicum.shareit.exception.InvalidStateBookingException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -40,14 +41,12 @@ public class BookingController {
     public BookingResponceDto approveBooking(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
                                             @PathVariable long bookingId,
                                             @RequestParam(value = "approved", required = true) String approved) throws InvalidParameterException, EntityNotFoundException {
-        BookingResponceDto brd = bookingServiceImpl.approveBooking(userId, bookingId ,approved );
-        //return bookingServiceImpl.approveBooking(userId, bookingId ,approved );
-        return brd;
+        return bookingServiceImpl.approveBooking(userId, bookingId ,approved );
     }
 
     @GetMapping()
     public List<BookingResponceDto> getBookings(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
-                                                       @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException {
+                                                       @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
         return bookingServiceImpl.getBookingsByUserIdAndState(userId, state);
     }
 
@@ -55,7 +54,7 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingResponceDto> getOwnBookingsByUserId(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
-                                                          @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) {
+                                                          @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
         return bookingServiceImpl.getOwnBookingsByUserId(userId, state);
     }
 
