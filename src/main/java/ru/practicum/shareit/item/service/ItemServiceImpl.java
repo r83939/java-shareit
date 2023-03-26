@@ -74,6 +74,10 @@ public class ItemServiceImpl {
                 specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
                 specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
             }
+            else {
+                specialLastBooking = null;
+                specialNextBooking = null;
+            }
             responceDto.add(new ItemWithBookingResponceDto(
                     item.getId(),
                     item.getName(),

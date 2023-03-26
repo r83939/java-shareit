@@ -148,12 +148,12 @@ public class BookingServiceImpl {
                         .collect(Collectors.toList());
             case WAITING:
                 return bookingRepo.findBookingsByBookerIdOrderByStartDesc(userId).stream()
-                        .filter(b -> b.getStatus().equals(State.WAITING))
+                        .filter(b -> b.getStatus().equals(Status.WAITING))
                         .map(b -> bookingMapper.toBookingResponceDto(b))
                         .collect(Collectors.toList());
             case REJECTED:
                 return bookingRepo.findBookingsByBookerIdOrderByStartDesc(userId).stream()
-                        .filter(b -> b.getStatus().equals(State.REJECTED))
+                        .filter(b -> b.getStatus().equals(Status.REJECTED))
                         .map(b -> bookingMapper.toBookingResponceDto(b))
                         .collect(Collectors.toList());
             default: throw new InvalidParameterException("Неверный параметр state: " + state);
@@ -190,12 +190,12 @@ public class BookingServiceImpl {
                         .collect(Collectors.toList());
             case WAITING:
                 return bookingRepo.findBookingByOwnerId(userId).stream()
-                        .filter(b -> b.getStatus().equals(State.WAITING))
+                        .filter(b -> b.getStatus().equals(Status.WAITING))
                         .map(b -> bookingMapper.toBookingResponceDto(b))
                         .collect(Collectors.toList());
             case REJECTED:
                 return bookingRepo.findBookingByOwnerId(userId).stream()
-                        .filter(b -> b.getStatus().equals(State.REJECTED))
+                        .filter(b -> b.getStatus().equals(Status.REJECTED))
                         .map(b -> bookingMapper.toBookingResponceDto(b))
                         .collect(Collectors.toList());
             default: throw new InvalidParameterException("Неверный параметр state: " + state);

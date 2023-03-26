@@ -23,7 +23,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
                      @Param("available") boolean available);
 
 
-   @Query(value = "SELECT * FROM items i where i.user_id = :id",
+   @Query(value = "SELECT * FROM items i where i.user_id = :id ORDER BY i.id ASC ",
            nativeQuery = true)
    List<Item> findAllByOwner(@Param("id") Long id);
 }
