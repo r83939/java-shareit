@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
-import ru.practicum.shareit.item.dto.CommentResponceDto;
-import ru.practicum.shareit.item.dto.ItemRequestDto;
-import ru.practicum.shareit.item.dto.ItemResponceDto;
-import ru.practicum.shareit.item.dto.ItemWithBookingResponceDto;
-import ru.practicum.shareit.item.service.CommentServiceImpl;
+import ru.practicum.shareit.exception.InvalidParameterException;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
 import javax.validation.Valid;
@@ -22,12 +19,10 @@ import java.util.List;
 public class ItemController {
 
     private final ItemServiceImpl itemServiceImpl;
-    private final CommentServiceImpl commentServiceImpl;
 
     @Autowired
-    public ItemController(ItemServiceImpl itemServiceImpl, CommentServiceImpl commentServiceImpl) {
+    public ItemController(ItemServiceImpl itemServiceImpl) {
         this.itemServiceImpl = itemServiceImpl;
-        this.commentServiceImpl = commentServiceImpl;
     }
 
     @GetMapping("/{id}")
@@ -74,8 +69,9 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentResponceDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                         @PathVariable long itemId) {
-        return commentServiceImpl.addComment(userId, itemId);
+                                         @PathVariable long itemId,
+                                         @RequestBody CommentRequestDto comment) throws EntityNotFoundException, InvalidParameterException {
+        return itemServiceImpl.addComment(userId, itemId, comment);
     }
 
 

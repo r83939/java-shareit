@@ -25,7 +25,8 @@ public class ItemMapper {
                 item.getDescription(),
                 item.getAvailable(),
                 item.getOwner(),
-                item.getRequest()
+                item.getRequest(),
+                item.getComments()
         );
     }
 

@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 
 @Entity
@@ -36,5 +37,9 @@ public class Item {
 
     @Column(name="request_id")
     private long request;        // ссылка на запрос от другого пользователя на создание вещи
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "item_id")
+    private List<Comment> comments;
 
 }

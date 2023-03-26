@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -20,16 +21,13 @@ public class Comment {
     @Column(name = "message")
     private String message;
 
-    @NotEmpty
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @NotEmpty
-    @Column(name = "item_id")
-    private Long itemId;
-
-
-
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "item_id")
+    private Item item;
 
 
 }

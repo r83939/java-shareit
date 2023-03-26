@@ -38,4 +38,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "ORDER BY start_date ASC LIMIT 1" ,nativeQuery = true)
     Booking getNextBookingByItemId(@Param("item_id") Long ItemId);
 
+    boolean existsByBookerAndItem(long userId, long itemId);
 }

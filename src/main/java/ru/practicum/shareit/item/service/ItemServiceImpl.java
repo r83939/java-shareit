@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.exception.InvalidParameterException;
 import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -23,15 +26,19 @@ public class ItemServiceImpl {
 
     private final BookingRepository bookingRepo;
     private final ItemRepository itemRepo;
-    private final ItemMapper itemMapper;
     private final UserRepository userRepo;
+    private final CommentRepository commentRepo;
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
 
     @Autowired
-    public ItemServiceImpl(BookingRepository bookingRepo, ItemRepository itemRepo, ItemMapper itemMapper, UserRepository userRepo) {
+    public ItemServiceImpl(BookingRepository bookingRepo, ItemRepository itemRepo, ItemMapper itemMapper, UserRepository userRepo, CommentRepository commentRepo, CommentMapper commentMapper) {
         this.bookingRepo = bookingRepo;
         this.itemRepo = itemRepo;
         this.itemMapper = itemMapper;
         this.userRepo = userRepo;
+        this.commentRepo = commentRepo;
+        this.commentMapper = commentMapper;
     }
 
     public ItemWithBookingResponceDto getItemById(long userId, long itemId) throws EntityNotFoundException {
@@ -59,7 +66,8 @@ public class ItemServiceImpl {
                 item.get().getOwner(),
                 specialLastBooking,
                 specialNextBooking,
-                item.get().getRequest()
+                item.get().getRequest(),
+                item.get().getComments()
         );
     }
 
@@ -86,7 +94,8 @@ public class ItemServiceImpl {
                     item.getOwner(),
                     specialLastBooking,
                     specialNextBooking,
-                    item.getRequest()
+                    item.getRequest(),
+                    item.getComments()
             ));
         }
         return  responceDto;
@@ -131,7 +140,6 @@ public class ItemServiceImpl {
         return null;
     }
 
-
     public List<ItemResponceDto> searchItems(Long userId, String text) throws EntityNotFoundException {
         if (!userRepo.existsById(userId)) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
@@ -144,5 +152,22 @@ public class ItemServiceImpl {
                 .collect(Collectors.toList());
     }
 
-
+    public CommentResponceDto addComment(long userId, long itemId,CommentRequestDto commentRequestDto) throws EntityNotFoundException, InvalidParameterException {
+        Optional<User> user = userRepo.findById(userId);
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
+        }
+        Optional<Item> item = itemRepo.findById(itemId);
+        if (item.isEmpty()) {
+            throw new EntityNotFoundException("Позиция с id: " + itemId + "не найдена.");
+        }
+        if (!bookingRepo.existsByBookerAndItem(userId, itemId)) {
+            throw new InvalidParameterException("Пользователь не может оставлять комментарии для данной позиции");
+        }
+        Comment comment = new Comment();
+        comment.setMessage(commentRequestDto.getMessage());
+        comment.setUser(user.get());
+        comment.setItem(item.get());
+        return commentMapper.toCommentResponceDto(commentRepo.save(comment));
+    }
 }
