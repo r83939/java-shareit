@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponceDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.EntityNotFoundException;
@@ -16,8 +17,12 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+
 
 @Service
 @Slf4j
@@ -25,17 +30,29 @@ public class BookingServiceImpl {
     private final BookingRepository bookingRepo;
     private final UserRepository userRepo;
     private final ItemRepository itemRepo;
+    private final BookingMapper bookingMapper;
 
 
     @Autowired
-    public BookingServiceImpl(BookingRepository bookingRepo, UserRepository userRepo, ItemRepository itemRepo) {
+    public BookingServiceImpl(BookingRepository bookingRepo,
+                              UserRepository userRepo,
+                              ItemRepository itemRepo,
+                              BookingMapper bookingMapper) {
         this.bookingRepo = bookingRepo;
         this.userRepo = userRepo;
         this.itemRepo = itemRepo;
+        this.bookingMapper = bookingMapper;
     }
 
-    public BookingResponceDto getBookingById(long id, long bookingId) {
-        return null;
+    public BookingResponceDto getBookingById(long userId, long bookingId) throws EntityNotFoundException {
+        Optional<Booking> booking = bookingRepo.findById(bookingId);
+        if (booking.isEmpty()) {
+            throw new EntityNotFoundException("Нет бронирования с id: " + bookingId);
+        }
+        if ((booking.get().getItem().getOwner() == userId) || (booking.get().getBooker().getId() == userId)) {
+            return BookingMapper.toBookingResponceDto(booking.get());
+        }
+        throw new EntityNotFoundException("");
     }
 
 
@@ -94,9 +111,39 @@ public class BookingServiceImpl {
         throw new InvalidParameterException("Указан неверный параметр: approved");
     }
 
-    public List<BookingResponceDto> getBookingsByUserId(Long userId, String state) {
-        return null;
+    public List<BookingResponceDto> getBookingsByUserIdAndState(Long userId, String state) throws InvalidParameterException {
+        switch (State.valueOf(state)) {
+            case ALL:
+                return bookingRepo.findBookingsByBookerId(userId).stream()
+                        .map(b -> bookingMapper.toBookingResponceDto(b))
+                        .collect(Collectors.toList());
+            case CURRENT:
+                return bookingRepo.findCurrentBookings(userId).stream()
+                        .filter(b -> b.getStart().isBefore(LocalDateTime.now()) && b.getEnd().isAfter(LocalDateTime.now()))
+                        .map(b -> bookingMapper.toBookingResponceDto(b))
+                        .collect(Collectors.toList());
+            case PAST:
+                return bookingRepo.findCurrentBookings(userId).stream()
+                        .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
+                        .map(b -> bookingMapper.toBookingResponceDto(b))
+                        .collect(Collectors.toList());
+            case FUTURE:
+                return bookingRepo.findCurrentBookings(userId).stream()
+                        .filter(b -> b.getStart().isAfter(LocalDateTime.now()))
+                        .map(b -> bookingMapper.toBookingResponceDto(b))
+                        .collect(Collectors.toList());
+            case WAITING:
+                return bookingRepo.findBookingByBookerIdAndStatus(userId, Status.WAITING).stream()
+                        .map(b -> bookingMapper.toBookingResponceDto(b))
+                        .collect(Collectors.toList());
+            case REJECTED:
+                return bookingRepo.findBookingByBookerIdAndStatus(userId, Status.REJECTED).stream()
+                        .map(b -> bookingMapper.toBookingResponceDto(b))
+                        .collect(Collectors.toList());
+            default: throw new InvalidParameterException("Неверный параметр state: " + state);
+        }
     }
+
 
     public List<BookingResponceDto> getOwnBookingsByUserId(Long userId, String state) {
         return null;

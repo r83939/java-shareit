@@ -25,7 +25,7 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     public BookingResponceDto getBooking(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
-                                         @PathVariable long bookingId) {
+                                         @PathVariable long bookingId) throws EntityNotFoundException {
         return bookingServiceImpl.getBookingById(userId, bookingId);
     }
 
@@ -46,10 +46,12 @@ public class BookingController {
     }
 
     @GetMapping()
-    public List<BookingResponceDto> getBookingsByUserId(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
-                                                       @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) {
-        return bookingServiceImpl.getBookingsByUserId(userId, state);
+    public List<BookingResponceDto> getBookings(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+                                                       @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException {
+        return bookingServiceImpl.getBookingsByUserIdAndState(userId, state);
     }
+
+
 
     @GetMapping("/owner")
     public List<BookingResponceDto> getOwnBookingsByUserId(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
