@@ -59,6 +59,8 @@ public class ItemServiceImpl {
             specialLastBooking = null;
             specialNextBooking = null;
         }
+        List<Comment> comments = new ArrayList<>();
+        comments = commentRepo.findAllByItemId(itemId);
         return new ItemWithBookingResponceDto(
                 item.get().getId(),
                 item.get().getName(),
@@ -68,7 +70,7 @@ public class ItemServiceImpl {
                 specialLastBooking,
                 specialNextBooking,
                 item.get().getRequest(),
-                item.get().getComments()
+                comments
         );
     }
 
@@ -87,6 +89,8 @@ public class ItemServiceImpl {
                 specialLastBooking = null;
                 specialNextBooking = null;
             }
+            List<Comment> comments = new ArrayList<>();
+            comments = commentRepo.findAllByItemId(item.getId());
             responceDto.add(new ItemWithBookingResponceDto(
                     item.getId(),
                     item.getName(),
@@ -96,7 +100,7 @@ public class ItemServiceImpl {
                     specialLastBooking,
                     specialNextBooking,
                     item.getRequest(),
-                    item.getComments()
+                    comments
             ));
         }
         return  responceDto;
@@ -107,12 +111,14 @@ public class ItemServiceImpl {
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
+        //List<Comment> comments = new ArrayList<>();
         Item item = new Item();
         item.setOwner(user.get());
         item.setName(itemRequestDto.getName());
         item.setDescription(itemRequestDto.getDescription());
         item.setAvailable(itemRequestDto.getAvailable());
-        return itemMapper.toItemResponceDto(itemRepo.save(item));
+        Item savedItem = itemRepo.save(item);
+        return itemMapper.toItemResponceDto(savedItem, new ArrayList<>());
     }
 
     public ItemResponceDto updateItem(long userId, ItemRequestDto itemRequestDto) throws EntityNotFoundException, AccessDeniedException {
@@ -134,7 +140,12 @@ public class ItemServiceImpl {
             updateItem.get().setAvailable(itemRequestDto.getAvailable());
         }
 
-        return itemMapper.toItemResponceDto(itemRepo.save(updateItem.get()));
+        Item apdatedItem = itemRepo.save(updateItem.get());
+        List<CommentResponceDto> comments = commentRepo.findAllByItemId(itemRequestDto.getId()).stream()
+                .map(c -> commentMapper.toCommentResponceDto(c))
+                .collect(Collectors.toList());
+
+        return itemMapper.toItemResponceDto(apdatedItem, comments);
     }
 
     public ItemRequestDto deleteItem(long itemId) {
@@ -149,7 +160,13 @@ public class ItemServiceImpl {
             return new ArrayList<>();
         }
         return itemRepo.search(text, true).stream()
-                .map(i -> itemMapper.toItemResponceDto(i))
+                .map(i -> itemMapper.toItemResponceDto(i, getCommentResponceDtos(i.getId())))
+                .collect(Collectors.toList());
+    }
+
+    List<CommentResponceDto> getCommentResponceDtos(long itemId) {
+        return commentRepo.findAllByItemId(itemId).stream()
+                .map(c -> commentMapper.toCommentResponceDto(c))
                 .collect(Collectors.toList());
     }
 

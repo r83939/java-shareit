@@ -38,8 +38,8 @@ public class Item {
     @Column(name="request_id")
     private long request;        // ссылка на запрос от другого пользователя на создание вещи
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "item_id")
-    private List<Comment> comments;
+    //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    //@JoinColumn(name = "item_id")
+    //private List<Comment> comments;
 
 }

@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 import ru.practicum.shareit.domain.validator.BookingDateEmpty;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;

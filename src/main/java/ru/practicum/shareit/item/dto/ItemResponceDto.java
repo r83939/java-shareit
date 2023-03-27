@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -19,9 +20,9 @@ public class ItemResponceDto {
     private User owner;
     private long request;
 
-    private List<Comment> comments;
+    private List<CommentResponceDto> comments;
 
-    public ItemResponceDto(long id, String name, String description, Boolean available, User owner, long request, List<Comment> comments) {
+    public ItemResponceDto(long id, String name, String description, Boolean available, User owner, long request, List<CommentResponceDto> comments) {
         this.id = id;
         this.name = name;
         this.description = description;
