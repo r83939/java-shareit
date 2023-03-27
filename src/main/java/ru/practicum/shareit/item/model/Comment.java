@@ -6,6 +6,7 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments", schema = "public")
@@ -18,8 +19,8 @@ public class Comment {
     private long id;
 
     @NotEmpty
-    @Column(name = "message")
-    private String message;
+    @Column(name = "text")
+    private String text;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -29,5 +30,5 @@ public class Comment {
     @JoinColumn(name = "item_id")
     private Item item;
 
-
+    private LocalDateTime created;
 }

@@ -68,12 +68,11 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentResponceDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public CommentResponceDto addComment(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @PathVariable long itemId,
-                                         @RequestBody CommentRequestDto comment) throws EntityNotFoundException, InvalidParameterException {
-        return itemServiceImpl.addComment(userId, itemId, comment);
+                                         @Valid @RequestBody CommentRequestDto comment) throws EntityNotFoundException, InvalidParameterException {
+        CommentResponceDto crd =  itemServiceImpl.addComment(userId, itemId, comment);
+        return crd;
     }
-
-
 
 }

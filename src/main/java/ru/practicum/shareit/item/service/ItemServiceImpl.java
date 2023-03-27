@@ -15,6 +15,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -153,6 +154,7 @@ public class ItemServiceImpl {
     }
 
     public CommentResponceDto addComment(long userId, long itemId,CommentRequestDto commentRequestDto) throws EntityNotFoundException, InvalidParameterException {
+
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
@@ -161,13 +163,14 @@ public class ItemServiceImpl {
         if (item.isEmpty()) {
             throw new EntityNotFoundException("Позиция с id: " + itemId + "не найдена.");
         }
-        if (!bookingRepo.existsByBookerAndItem(userId, itemId)) {
-            throw new InvalidParameterException("Пользователь не может оставлять комментарии для данной позиции");
+        if (bookingRepo.existsByBookerAndItem(userId, itemId) == 0) {
+            throw new InvalidParameterException("Пользователь не может оставлять комментарии для вещи, которую не брал в аренду.");
         }
         Comment comment = new Comment();
-        comment.setMessage(commentRequestDto.getMessage());
+        comment.setText(commentRequestDto.getText());
         comment.setUser(user.get());
         comment.setItem(item.get());
+        comment.setCreated(LocalDateTime.now());
         return commentMapper.toCommentResponceDto(commentRepo.save(comment));
     }
 }

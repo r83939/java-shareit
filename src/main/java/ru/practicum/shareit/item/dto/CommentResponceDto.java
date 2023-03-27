@@ -7,19 +7,20 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class CommentResponceDto {
     private long id;
-    private String message;
-    private User user;
-    private Item item;
+    private String text;
+    private String authorName;
+    private LocalDateTime created;
 
-    public CommentResponceDto(long id, String message, User user, Item item) {
+    public CommentResponceDto(long id, String text, String authorName, LocalDateTime created) {
         this.id = id;
-        this.message = message;
-        this.user = user;
-        this.item = item;
+        this.text = text;
+        this.authorName = authorName;
+        this.created = created;
     }
 }

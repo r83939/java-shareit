@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS bookings (
 
 CREATE TABLE IF NOT EXISTS comments (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-    message varchar(2000) NOT NULL,
+    text varchar(2000) NOT NULL,
     user_id BIGINT NOT null references users(id) ON DELETE CASCADE,
-    item_id BIGINT NOT null references items(id) ON DELETE CASCADE);
+    item_id BIGINT NOT null references items(id) ON DELETE CASCADE
+    created TIMESTAMP);
 

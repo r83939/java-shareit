@@ -8,9 +8,9 @@ public class CommentMapper {
     public static CommentResponceDto toCommentResponceDto(Comment comment) {
         return new CommentResponceDto(
                 comment.getId(),
-                comment.getMessage(),
-                comment.getUser(),
-                comment.getItem()
+                comment.getText(),
+                comment.getUser().getName(),
+                comment.getCreated()
         );
     }
 }
