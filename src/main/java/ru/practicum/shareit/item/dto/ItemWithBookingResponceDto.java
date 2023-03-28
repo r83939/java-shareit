@@ -18,6 +18,7 @@ public class ItemWithBookingResponceDto {
     private SpecialBookingDto nextBooking;
     private long request;
     private List<CommentResponceDto> comments;
+
     public ItemWithBookingResponceDto(long id,
                                       String name,
                                       String description,
