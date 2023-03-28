@@ -54,14 +54,12 @@ public class ItemServiceImpl {
         var nextBooking = bookingRepo.getNextBookingByItemId(itemId);
         if ((lastBooking != null) &&  (item.get().getOwner().getId() == userId) && !lastBooking.getStatus().equals(Status.REJECTED)) {
             specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
-        }
-        else {
+        } else {
             specialLastBooking = null;
         }
         if ((nextBooking != null) && (item.get().getOwner().getId() == userId) && !nextBooking.getStatus().equals(Status.REJECTED)) {
             specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
-        }
-        else {
+        } else {
             specialNextBooking = null;
         }
         List<CommentResponceDto> comments = commentRepo.findAllByItemId(itemId).stream()

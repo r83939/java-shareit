@@ -12,28 +12,29 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "items", schema = "public")
-@Getter @Setter
+@Getter
+@Setter
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;              // уникальный идентификатор вещи
 
     @NotEmpty
-    @Column(name="name")
+    @Column(name = "name")
     private String name;          // краткое название
 
     @NotEmpty
-    @Column(name="description")
+    @Column(name = "description")
     private String description;   // развёрнутое описание
 
     @NotNull (message = "поле available не должно быть пустым.")
-    @Column(name="available")
+    @Column(name = "available")
     private Boolean available;    // статус о том, доступна или нет вещь для аренды
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User owner;           // владелец вещи
 
-    @Column(name="request_id")
+    @Column(name = "request_id")
     private long request;        // ссылка на запрос от другого пользователя на создание вещи
 }

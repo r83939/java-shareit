@@ -27,6 +27,7 @@ public class ItemWithBookingResponceDto {
                                       SpecialBookingDto nextBooking,
                                       long request,
                                       List<CommentResponceDto> comments) {
+
         this.id = id;
         this.name = name;
         this.description = description;

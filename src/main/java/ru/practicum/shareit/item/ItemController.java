@@ -19,7 +19,8 @@ public class ItemController {
     private final ItemServiceImpl itemServiceImpl;
 
     @Autowired
-    public ItemController(ItemServiceImpl itemServiceImpl) { this.itemServiceImpl = itemServiceImpl;
+    public ItemController(ItemServiceImpl itemServiceImpl) {
+        this.itemServiceImpl = itemServiceImpl;
     }
 
     @GetMapping("/{id}")

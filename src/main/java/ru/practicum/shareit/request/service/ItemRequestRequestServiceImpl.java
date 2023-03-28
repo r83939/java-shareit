@@ -13,11 +13,11 @@ import java.util.List;
 @Slf4j
 public class ItemRequestRequestServiceImpl {
 
-    private final ItemRequestRepository ItemRequestRepo;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Autowired
     public ItemRequestRequestServiceImpl(ItemRequestRepository itemRequestRepo) {
-        ItemRequestRepo = itemRequestRepo;
+        itemRequestRepository = itemRequestRepo;
     }
 
     public ItemRequestResponceDto addItemRequest(Long userId, ItemRequestRequestDto itemRequest) {

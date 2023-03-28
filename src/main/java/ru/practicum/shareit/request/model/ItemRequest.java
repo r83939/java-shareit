@@ -9,8 +9,9 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "requests")
-@Getter @Setter
+@Table(name = "requests", schema = "public")
+@Getter
+@Setter
 public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
