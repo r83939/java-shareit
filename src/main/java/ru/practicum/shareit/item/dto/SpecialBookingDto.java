@@ -15,6 +15,5 @@ public class SpecialBookingDto {
     }
 
     public SpecialBookingDto() {
-
     }
 }

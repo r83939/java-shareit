@@ -15,8 +15,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface BookingDateEmpty {
     String message() default "Дата бронирования должна быть указана";
-
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 }

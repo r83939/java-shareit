@@ -7,10 +7,6 @@ import ru.practicum.shareit.user.model.User;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Getter
 @Setter
 public class ItemRequestDto {

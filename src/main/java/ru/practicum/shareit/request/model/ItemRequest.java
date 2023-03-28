@@ -19,9 +19,9 @@ public class ItemRequest {
     @Column(name = "description")
     private String description; // текст запроса, содержащий описание требуемой вещи
 
-    @Column(name = "user_id")
-    private long requester;     // пользователь, создавший запрос
-
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User requester;
 
     @Column(name = "created")
     private Date created;       // дата и время создания запроса

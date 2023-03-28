@@ -50,17 +50,9 @@ public class BookingController {
         return bookingServiceImpl.getBookingsByUserIdAndState(userId, state);
     }
 
-
-
     @GetMapping("/owner")
     public List<BookingResponceDto> getOwnBookingsByUserId(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
                                                           @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
         return bookingServiceImpl.getOwnBookingsByUserId(userId, state);
     }
-
-
-
-
-
-
 }

@@ -13,8 +13,6 @@ import java.util.Date;
 @Getter
 @Setter
 public class BookingRequestDto {
-
-
     @Future
     @BookingDateEmpty(message = "Не указана дата начала бронирования")
     private LocalDateTime start;           // дата и время начала бронирования
@@ -26,7 +24,6 @@ public class BookingRequestDto {
     private long itemId;            // вещь, которую пользователь бронирует
 
     private long booker;          // пользователь, который осуществляет бронирование
-
 
     public BookingRequestDto(LocalDateTime start, LocalDateTime end, long itemId, long booker) {
         this.start = start;

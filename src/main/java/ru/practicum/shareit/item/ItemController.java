@@ -12,17 +12,14 @@ import ru.practicum.shareit.item.service.ItemServiceImpl;
 import javax.validation.Valid;
 import java.util.List;
 
-
 @Slf4j
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-
     private final ItemServiceImpl itemServiceImpl;
 
     @Autowired
-    public ItemController(ItemServiceImpl itemServiceImpl) {
-        this.itemServiceImpl = itemServiceImpl;
+    public ItemController(ItemServiceImpl itemServiceImpl) { this.itemServiceImpl = itemServiceImpl;
     }
 
     @GetMapping("/{id}")
@@ -74,5 +71,4 @@ public class ItemController {
         CommentResponceDto crd =  itemServiceImpl.addComment(userId, itemId, comment);
         return crd;
     }
-
 }

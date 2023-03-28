@@ -25,6 +25,4 @@ public class BookingMapper {
                 booking.getStatus()
         );
     }
-
-
 }

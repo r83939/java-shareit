@@ -14,17 +14,11 @@ import java.util.Date;
 @Setter
 public class BookingResponceDto {
     private long id;              // уникальный идентификатор бронирования
-
     private LocalDateTime start;           // дата и время начала бронирования
-
     private LocalDateTime end;             // дата и время конца бронирования
-
     private Item item;            // вещь, которую пользователь бронирует
-
     private User booker;          // пользователь, который осуществляет бронирование
-
     private Status status;
-
 
 
     public BookingResponceDto(long id, LocalDateTime start, LocalDateTime end, Item item, User booker, Status status) {
@@ -35,5 +29,4 @@ public class BookingResponceDto {
         this.booker = booker;
         this.status = status;
     }
-
 }
