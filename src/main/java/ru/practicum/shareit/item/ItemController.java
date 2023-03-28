@@ -1,12 +1,81 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.AccessDeniedException;
+import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.item.dto.CommentResponceDto;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.service.CommentServiceImpl;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 
-/**
- * TODO Sprint add-controllers.
- */
+import javax.validation.Valid;
+import java.util.List;
+
+
+@Slf4j
 @RestController
 @RequestMapping("/items")
 public class ItemController {
+
+    private final ItemServiceImpl itemServiceImpl;
+    private final CommentServiceImpl commentServiceImpl;
+
+    @Autowired
+    public ItemController(ItemServiceImpl itemServiceImpl, CommentServiceImpl commentServiceImpl) {
+        this.itemServiceImpl = itemServiceImpl;
+        this.commentServiceImpl = commentServiceImpl;
+    }
+
+    @GetMapping("/{id}")
+    public ItemDto getItem(@PathVariable long id) throws EntityNotFoundException {
+
+        return itemServiceImpl.getItemById(id);
+    }
+
+    @GetMapping()
+    public List<ItemDto> getAllItem(@RequestHeader("X-Sharer-User-Id") Long userId) {
+
+        return itemServiceImpl.getAllItemsByUserId(userId);
+    }
+
+    @PostMapping()
+    public ItemDto createItem(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+                              @Valid @RequestBody Item item) throws EntityNotFoundException {
+
+        return itemServiceImpl.addItem(userId, item);
+    }
+
+    @PatchMapping("/{id}")
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                              @PathVariable long id,
+                              @RequestBody Item item) throws EntityNotFoundException, AccessDeniedException {
+
+        item.setId(id);
+        return itemServiceImpl.updateItem(userId, item);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                             @PathVariable long itemId) {
+        return "Sorry, the method has not been implemented yet!";
+    }
+
+    @GetMapping("/search")
+    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                     @RequestParam(value = "text", required = true) String text) throws EntityNotFoundException {
+
+        return itemServiceImpl.searchItems(userId, text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentResponceDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                         @PathVariable long itemId) {
+        return commentServiceImpl.addComment(userId, itemId);
+    }
+
+
+
 }
