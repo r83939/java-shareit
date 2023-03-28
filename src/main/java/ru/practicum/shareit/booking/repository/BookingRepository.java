@@ -28,8 +28,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query(value = "SELECT * FROM bookings b " +
             "WHERE item_id = :item_id " +
-            "AND end_date < CURRENT_TIMESTAMP " +
-            "ORDER BY end_date DESC LIMIT 1" ,nativeQuery = true)
+            "AND start_date < CURRENT_TIMESTAMP " +
+            "ORDER BY start_date DESC LIMIT 1" ,nativeQuery = true)
     Booking getLastBookingByItemId(@Param("item_id") Long ItemId);
 
     @Query(value = "SELECT * FROM bookings b " +
@@ -41,6 +41,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "SELECT COUNT (*) FROM bookings b " +
             "WHERE b.booker_id = :user_id " +
             "AND b.item_id = :item_id " +
-            "AND b.status NOT LIKE 'REJECTED'", nativeQuery = true)
+            "AND b.status LIKE 'APPROVED'" +
+            "AND b.start_date < CURRENT_TIMESTAMP", nativeQuery = true)
     int existsByBookerAndItem(@Param("user_id") long userId, @Param("item_id") long itemId);
 }

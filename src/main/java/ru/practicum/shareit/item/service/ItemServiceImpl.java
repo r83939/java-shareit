@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
@@ -47,20 +48,25 @@ public class ItemServiceImpl {
         if (item.isEmpty()) {
             throw new EntityNotFoundException("Не найдено позиции с id: " + itemId);
         }
-        SpecialBookingDto specialLastBooking = new SpecialBookingDto();
-        SpecialBookingDto specialNextBooking = new SpecialBookingDto();
+        SpecialBookingDto specialLastBooking;
+        SpecialBookingDto specialNextBooking;
         var lastBooking = bookingRepo.getLastBookingByItemId(itemId);
-        var nextBooking = (bookingRepo.getNextBookingByItemId(itemId));
-        if ((lastBooking != null) && (nextBooking != null) && (item.get().getOwner().getId() == userId)) {
+        var nextBooking = bookingRepo.getNextBookingByItemId(itemId);
+        if ((lastBooking != null) &&  (item.get().getOwner().getId() == userId) && !lastBooking.getStatus().equals(Status.REJECTED)) {
             specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
-            specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
         }
         else {
             specialLastBooking = null;
+        }
+        if ((nextBooking != null) && (item.get().getOwner().getId() == userId) && !nextBooking.getStatus().equals(Status.REJECTED)) {
+            specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
+        }
+        else {
             specialNextBooking = null;
         }
-        List<Comment> comments = new ArrayList<>();
-        comments = commentRepo.findAllByItemId(itemId);
+        List<CommentResponceDto> comments = commentRepo.findAllByItemId(itemId).stream()
+                .map(c -> commentMapper.toCommentResponceDto(c))
+                .collect(Collectors.toList());
         return new ItemWithBookingResponceDto(
                 item.get().getId(),
                 item.get().getName(),
@@ -89,8 +95,10 @@ public class ItemServiceImpl {
                 specialLastBooking = null;
                 specialNextBooking = null;
             }
-            List<Comment> comments = new ArrayList<>();
-            comments = commentRepo.findAllByItemId(item.getId());
+            List<CommentResponceDto> comments = commentRepo.findAllByItemId(item.getId()).stream()
+                    .map(c -> commentMapper.toCommentResponceDto(c))
+                    .collect(Collectors.toList());
+
             responceDto.add(new ItemWithBookingResponceDto(
                     item.getId(),
                     item.getName(),

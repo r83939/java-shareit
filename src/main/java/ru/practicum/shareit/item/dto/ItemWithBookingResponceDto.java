@@ -21,7 +21,7 @@ public class ItemWithBookingResponceDto {
     private SpecialBookingDto lastBooking;
     private SpecialBookingDto nextBooking;
     private long request;
-    private List<Comment> comments;
+    private List<CommentResponceDto> comments;
     public ItemWithBookingResponceDto(long id,
                                       String name,
                                       String description,
@@ -30,7 +30,7 @@ public class ItemWithBookingResponceDto {
                                       SpecialBookingDto lastBooking,
                                       SpecialBookingDto nextBooking,
                                       long request,
-                                      List<Comment> comments) {
+                                      List<CommentResponceDto> comments) {
         this.id = id;
         this.name = name;
         this.description = description;
