@@ -80,7 +80,7 @@ public class ItemServiceImpl {
 
     public List<ItemWithBookingResponceDto> getAllItemsByUserId(long userId) {
         List<ItemWithBookingResponceDto> responceDto = new ArrayList<>();
-        for ( Item item : itemRepo.findAllByOwner(userId)) {
+        for (Item item : itemRepo.findAllByOwner(userId)) {
             SpecialBookingDto specialLastBooking = new SpecialBookingDto();
             SpecialBookingDto specialNextBooking = new SpecialBookingDto();
             var lastBooking = bookingRepo.getLastBookingByItemId(item.getId());
@@ -88,8 +88,7 @@ public class ItemServiceImpl {
             if (lastBooking != null && nextBooking != null) {
                 specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
                 specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
-            }
-            else {
+            } else {
                 specialLastBooking = null;
                 specialNextBooking = null;
             }
@@ -112,7 +111,7 @@ public class ItemServiceImpl {
         return  responceDto;
     }
 
-    public ItemResponceDto addItem(long userId,  ItemRequestDto itemRequestDto ) throws EntityNotFoundException {
+    public ItemResponceDto addItem(long userId,  ItemRequestDto itemRequestDto) throws EntityNotFoundException {
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);

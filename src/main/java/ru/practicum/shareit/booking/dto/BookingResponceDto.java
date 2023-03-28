@@ -17,8 +17,7 @@ public class BookingResponceDto {
     private Item item;            // вещь, которую пользователь бронирует
     private User booker;          // пользователь, который осуществляет бронирование
     private Status status;
-
-
+    
     public BookingResponceDto(long id, LocalDateTime start, LocalDateTime end, Item item, User booker, Status status) {
         this.id = id;
         this.start = start;

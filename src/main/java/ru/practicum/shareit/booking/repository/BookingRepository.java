@@ -29,13 +29,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "SELECT * FROM bookings b " +
             "WHERE item_id = :item_id " +
             "AND start_date < CURRENT_TIMESTAMP " +
-            "ORDER BY start_date DESC LIMIT 1" , nativeQuery = true)
-    Booking getLastBookingByItemId(@Param("item_id") Long ItemId);
+            "ORDER BY start_date DESC LIMIT 1", nativeQuery = true)
+    Booking getLastBookingByItemId(@Param("item_id") Long itemId);
 
     @Query(value = "SELECT * FROM bookings b " +
             "WHERE item_id = :item_id " +
             "AND start_date > CURRENT_TIMESTAMP " +
-            "ORDER BY start_date ASC LIMIT 1" , nativeQuery = true)
+            "ORDER BY start_date ASC LIMIT 1", nativeQuery = true)
     Booking getNextBookingByItemId(@Param("item_id") Long itemId);
 
     @Query(value = "SELECT COUNT (*) FROM bookings b " +

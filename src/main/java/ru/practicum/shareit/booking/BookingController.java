@@ -41,7 +41,7 @@ public class BookingController {
     public BookingResponceDto approveBooking(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
                                             @PathVariable long bookingId,
                                             @RequestParam(value = "approved", required = true) String approved) throws InvalidParameterException, EntityNotFoundException {
-        return bookingServiceImpl.approveBooking(userId, bookingId ,approved );
+        return bookingServiceImpl.approveBooking(userId, bookingId, approved);
     }
 
     @GetMapping()

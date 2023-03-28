@@ -15,6 +15,7 @@ public class BookingMapper {
                 booking.getStatus()
         );
     }
+
     public static BookingResponceDto toApproveBookingResponceDto(Booking booking) {
         return new BookingResponceDto(
                 booking.getId(),
