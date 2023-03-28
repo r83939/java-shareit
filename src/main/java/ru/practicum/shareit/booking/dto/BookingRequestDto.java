@@ -5,10 +5,8 @@ import lombok.Setter;
 import ru.practicum.shareit.domain.validator.BookingDateEmpty;
 
 import javax.validation.constraints.Future;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Getter
 @Setter

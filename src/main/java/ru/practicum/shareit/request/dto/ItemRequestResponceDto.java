@@ -2,7 +2,6 @@ package ru.practicum.shareit.request.dto;
 
 import ru.practicum.shareit.user.model.User;
 
-import javax.persistence.*;
 import java.util.Date;
 
 public class ItemRequestResponceDto {
