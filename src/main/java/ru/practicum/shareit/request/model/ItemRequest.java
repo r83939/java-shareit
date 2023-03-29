@@ -21,7 +21,7 @@ public class ItemRequest {
     private String description; // текст запроса, содержащий описание требуемой вещи
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "requestor_id")
     private User requester;
 
     @Column(name = "created")
