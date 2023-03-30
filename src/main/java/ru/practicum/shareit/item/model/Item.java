@@ -18,8 +18,7 @@ import javax.validation.constraints.NotNull;
 public class Item {
     @Id
     @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_ITEMS", allocationSize=1)
-    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_ITEMS", allocationSize = 1)
     private long id;              // уникальный идентификатор вещи
 
     @NotEmpty
