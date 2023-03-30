@@ -16,7 +16,6 @@ public class ItemRequest {
     @Id
     @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_REQUESTS",allocationSize=1)
-    //@GeneratedValue(strategy = GenerationType.AUTO)
     private long id;            // уникальный идентификатор запроса
 
     @Column(name = "description")

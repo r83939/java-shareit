@@ -16,7 +16,6 @@ public class ItemResponceDto {
     private Boolean available;
     private User owner;
     private Long request;
-
     private List<CommentResponceDto> comments;
 
     public ItemResponceDto(long id, String name, String description, Boolean available, User owner, Long request, List<CommentResponceDto> comments) {

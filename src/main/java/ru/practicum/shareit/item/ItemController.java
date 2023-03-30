@@ -69,7 +69,6 @@ public class ItemController {
     public CommentResponceDto addComment(@RequestHeader("X-Sharer-User-Id") long userId,
                                          @PathVariable long itemId,
                                          @Valid @RequestBody CommentRequestDto comment) throws EntityNotFoundException, InvalidParameterException {
-        CommentResponceDto crd =  itemServiceImpl.addComment(userId, itemId, comment);
-        return crd;
+        return itemServiceImpl.addComment(userId, itemId, comment);
     }
 }

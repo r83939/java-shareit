@@ -18,7 +18,6 @@ public class Comment {
     @Id
     @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_COMMENTS", allocationSize=1)
-    //@GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @NotEmpty
     @Column(name = "text")

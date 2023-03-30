@@ -16,7 +16,6 @@ public class Booking {
     @Id
     @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_BOOKINGS", allocationSize = 1)
-    //@GeneratedValue(strategy = GenerationType.AUTO)
     private long id;              // уникальный идентификатор бронирования
     @Column(name = "start_date")
     private LocalDateTime start;           // дата и время начала бронирования
