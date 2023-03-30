@@ -73,7 +73,7 @@ public class ItemServiceImpl {
                 item.get().getOwner(),
                 specialLastBooking,
                 specialNextBooking,
-                item.get().getRequest(),
+                item.get().getRequest() != null ? item.get().getRequest().getId() : null,
                 comments
         );
     }
@@ -104,7 +104,7 @@ public class ItemServiceImpl {
                     item.getOwner(),
                     specialLastBooking,
                     specialNextBooking,
-                    item.getRequest(),
+                    item.getRequest() != null ? item.getRequest().getId() : null,
                     comments
             ));
         }

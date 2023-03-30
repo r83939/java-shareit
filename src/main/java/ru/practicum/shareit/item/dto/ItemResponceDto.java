@@ -15,11 +15,11 @@ public class ItemResponceDto {
     private String description;
     private Boolean available;
     private User owner;
-    private long request;
+    private Long request;
 
     private List<CommentResponceDto> comments;
 
-    public ItemResponceDto(long id, String name, String description, Boolean available, User owner, long request, List<CommentResponceDto> comments) {
+    public ItemResponceDto(long id, String name, String description, Boolean available, User owner, Long request, List<CommentResponceDto> comments) {
         this.id = id;
         this.name = name;
         this.description = description;

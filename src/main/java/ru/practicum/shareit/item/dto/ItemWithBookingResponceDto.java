@@ -16,7 +16,7 @@ public class ItemWithBookingResponceDto {
     private User owner;
     private SpecialBookingDto lastBooking;
     private SpecialBookingDto nextBooking;
-    private long request;
+    private Long request;
     private List<CommentResponceDto> comments;
 
     public ItemWithBookingResponceDto(long id,
@@ -26,7 +26,7 @@ public class ItemWithBookingResponceDto {
                                       User owner,
                                       SpecialBookingDto lastBooking,
                                       SpecialBookingDto nextBooking,
-                                      long request,
+                                      Long request,
                                       List<CommentResponceDto> comments) {
 
         this.id = id;

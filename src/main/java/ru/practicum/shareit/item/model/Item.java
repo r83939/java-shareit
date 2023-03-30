@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -16,7 +17,9 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_ITEMS", allocationSize=1)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private long id;              // уникальный идентификатор вещи
 
     @NotEmpty
@@ -35,6 +38,8 @@ public class Item {
     @JoinColumn(name = "user_id")
     private User owner;           // владелец вещи
 
-    @Column(name = "request_id")
-    private long request;        // ссылка на запрос от другого пользователя на создание вещи
+   // @Column(name = "request_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "request_id", referencedColumnName = "id")
+    private ItemRequest request;        // ссылка на запрос от другого пользователя на создание вещи
 }

@@ -13,7 +13,9 @@ import javax.validation.constraints.Email;
 @Setter
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_USERS", allocationSize = 1)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private long id;                                    // уникальный идентификатор пользователя
 
     @Column(name = "name")
