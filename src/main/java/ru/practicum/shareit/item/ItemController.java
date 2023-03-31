@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
+    private final String USERID = "X-Sharer-User-Id";
     private final ItemServiceImpl itemServiceImpl;
 
     @Autowired
@@ -24,27 +25,27 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemWithBookingResponceDto getItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemWithBookingResponceDto getItem(@RequestHeader(USERID) Long userId,
                                               @PathVariable long id) throws EntityNotFoundException {
 
         return itemServiceImpl.getItemById(userId, id);
     }
 
     @GetMapping()
-    public List<ItemWithBookingResponceDto> getAllItem(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemWithBookingResponceDto> getAllItem(@RequestHeader(USERID) Long userId) {
 
         return itemServiceImpl.getAllItemsByUserId(userId);
     }
 
     @PostMapping()
-    public ItemResponceDto createItem(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+    public ItemResponceDto createItem(@RequestHeader(value = USERID, required = true) Long userId,
                               @Valid @RequestBody ItemRequestDto item) throws EntityNotFoundException {
 
         return itemServiceImpl.addItem(userId, item);
     }
 
     @PatchMapping("/{id}")
-    public ItemResponceDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemResponceDto updateItem(@RequestHeader(USERID) Long userId,
                               @PathVariable long id,
                               @RequestBody ItemRequestDto item) throws EntityNotFoundException, AccessDeniedException {
 
@@ -53,20 +54,20 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public String deleteItem(@RequestHeader(USERID) Long userId,
                              @PathVariable long itemId) {
         return "Sorry, the method has not been implemented yet!";
     }
 
     @GetMapping("/search")
-    public List<ItemResponceDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<ItemResponceDto> searchItems(@RequestHeader(USERID) Long userId,
                                      @RequestParam(value = "text", required = true) String text) throws EntityNotFoundException {
 
         return itemServiceImpl.searchItems(userId, text);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentResponceDto addComment(@RequestHeader("X-Sharer-User-Id") long userId,
+    public CommentResponceDto addComment(@RequestHeader(USERID) long userId,
                                          @PathVariable long itemId,
                                          @Valid @RequestBody CommentRequestDto comment) throws EntityNotFoundException, InvalidParameterException {
         return itemServiceImpl.addComment(userId, itemId, comment);

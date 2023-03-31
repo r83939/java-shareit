@@ -19,26 +19,25 @@ public class Item {
     @Id
     @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_ITEMS", allocationSize = 1)
-    private long id;              // уникальный идентификатор вещи
+    private long id;
 
     @NotEmpty
     @Column(name = "name")
-    private String name;          // краткое название
+    private String name;
 
     @NotEmpty
     @Column(name = "description")
-    private String description;   // развёрнутое описание
+    private String description;
 
     @NotNull (message = "поле available не должно быть пустым.")
     @Column(name = "available")
-    private Boolean available;    // статус о том, доступна или нет вещь для аренды
+    private Boolean available;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private User owner;           // владелец вещи
+    private User owner;
 
-   // @Column(name = "request_id")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "request_id", referencedColumnName = "id")
-    private ItemRequest request;        // ссылка на запрос от другого пользователя на создание вещи
+    private ItemRequest request;
 }

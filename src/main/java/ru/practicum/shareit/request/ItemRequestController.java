@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
+    private final String USERID = "X-Sharer-User-Id";
     private final ItemRequestRequestServiceImpl itemRequestRequestServiceImpl;
 
     @Autowired
@@ -21,27 +22,27 @@ public class ItemRequestController {
     }
 
     @PostMapping()
-    public ItemRequestResponceDto createItemRequestRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemRequestResponceDto createItemRequestRequest(@RequestHeader(USERID) Long userId,
                                                            @RequestBody @Valid ItemRequestRequestDto itemRequest) {
 
         return itemRequestRequestServiceImpl.addItemRequest(userId, itemRequest);
     }
 
     @GetMapping()
-    public List<ItemRequestResponceDto> createUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemRequestResponceDto> createUser(@RequestHeader(USERID) Long userId) {
 
         return itemRequestRequestServiceImpl.getItemRequests(userId);
     }
 
     @PatchMapping("/{id}")
-    public ItemRequestResponceDto updateItemRequestRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemRequestResponceDto updateItemRequestRequest(@RequestHeader(USERID) Long userId,
                                                           @RequestBody @Valid ItemRequestRequestDto itemRequest) {
 
         return itemRequestRequestServiceImpl.updateItemRequest(userId, itemRequest);
     }
 
     @DeleteMapping("/{id}")
-    public ItemRequestResponceDto deleteItemRequestRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemRequestResponceDto deleteItemRequestRequest(@RequestHeader(USERID) Long userId,
                                                           @PathVariable Long id) {
 
         return itemRequestRequestServiceImpl.deleteItemRequest(userId, id);

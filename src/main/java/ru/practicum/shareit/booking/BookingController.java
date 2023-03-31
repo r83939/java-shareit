@@ -17,6 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/bookings")
 public class BookingController {
+    
+    private final String USERID = "X-Sharer-User-Id";
     private final BookingServiceImpl bookingServiceImpl;
 
     @Autowired
@@ -25,33 +27,33 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public BookingResponceDto getBooking(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+    public BookingResponceDto getBooking(@RequestHeader(value = USERID, required = true) Long userId,
                                          @PathVariable long bookingId) throws EntityNotFoundException {
         return bookingServiceImpl.getBookingById(userId, bookingId);
     }
 
     @PostMapping()
-    public BookingResponceDto createBooking(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+    public BookingResponceDto createBooking(@RequestHeader(value = USERID, required = true) Long userId,
                                             @Valid @RequestBody BookingRequestDto booking) throws EntityNotFoundException, InvalidParameterException {
 
         return bookingServiceImpl.addBooking(userId, booking);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingResponceDto approveBooking(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+    public BookingResponceDto approveBooking(@RequestHeader(value = USERID, required = true) Long userId,
                                             @PathVariable long bookingId,
                                             @RequestParam(value = "approved", required = true) String approved) throws InvalidParameterException, EntityNotFoundException {
         return bookingServiceImpl.approveBooking(userId, bookingId, approved);
     }
 
     @GetMapping()
-    public List<BookingResponceDto> getBookings(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+    public List<BookingResponceDto> getBookings(@RequestHeader(value = USERID, required = true) Long userId,
                                                        @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
         return bookingServiceImpl.getBookingsByUserIdAndState(userId, state);
     }
 
     @GetMapping("/owner")
-    public List<BookingResponceDto> getOwnBookingsByUserId(@RequestHeader(value = "X-Sharer-User-Id", required = true) Long userId,
+    public List<BookingResponceDto> getOwnBookingsByUserId(@RequestHeader(value = USERID, required = true) Long userId,
                                                           @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
         return bookingServiceImpl.getOwnBookingsByUserId(userId, state);
     }

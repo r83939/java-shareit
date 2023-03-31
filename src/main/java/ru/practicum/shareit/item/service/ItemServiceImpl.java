@@ -52,12 +52,12 @@ public class ItemServiceImpl {
         SpecialBookingDto specialNextBooking;
         var lastBooking = bookingRepo.getLastBookingByItemId(itemId);
         var nextBooking = bookingRepo.getNextBookingByItemId(itemId);
-        if ((lastBooking != null) &&  (item.get().getOwner().getId() == userId) && !lastBooking.getStatus().equals(Status.REJECTED)) {
+        if ((lastBooking != null) &&  (item.get().getOwner().getId() == userId) && !Status.REJECTED.equals(lastBooking.getStatus())) {
             specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
         } else {
             specialLastBooking = null;
         }
-        if ((nextBooking != null) && (item.get().getOwner().getId() == userId) && !nextBooking.getStatus().equals(Status.REJECTED)) {
+        if ((nextBooking != null) && (item.get().getOwner().getId() == userId) && !Status.REJECTED.equals(nextBooking.getStatus())) {
             specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
         } else {
             specialNextBooking = null;

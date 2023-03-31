@@ -15,12 +15,12 @@ public class User {
     @Id
     @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_USERS", allocationSize = 1)
-    private long id;                                    // уникальный идентификатор пользователя
+    private long id;
 
     @Column(name = "name")
-    private String name;                                // имя или логин пользователя
+    private String name;
 
     @Column(name = "email", nullable = false, unique = true)
     @Email(message = "Отсутствует email или неверный формат")
-    private String email;                              // уникальный адрес электронной почты
+    private String email;
 }

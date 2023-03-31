@@ -16,17 +16,17 @@ public class Booking {
     @Id
     @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_BOOKINGS", allocationSize = 1)
-    private long id;              // уникальный идентификатор бронирования
+    private long id;
     @Column(name = "start_date")
-    private LocalDateTime start;           // дата и время начала бронирования
+    private LocalDateTime start;
     @Column(name = "end_date")
-    private LocalDateTime end;             // дата и время конца бронирования
+    private LocalDateTime end;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
-    private Item item;            // вещь, которую пользователь бронирует
+    private Item item;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "booker_id")
-    private User booker;          // пользователь, который осуществляет бронирование
+    private User booker;
     @Enumerated(EnumType.STRING)
-    private Status status = Status.WAITING;        // статус бронирования
+    private Status status = Status.WAITING;
 }

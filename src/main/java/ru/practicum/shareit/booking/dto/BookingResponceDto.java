@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BookingResponceDto {
-    private long id;              // уникальный идентификатор бронирования
-    private LocalDateTime start;           // дата и время начала бронирования
-    private LocalDateTime end;             // дата и время конца бронирования
-    private Item item;            // вещь, которую пользователь бронирует
-    private User booker;          // пользователь, который осуществляет бронирование
+    private long id;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private Item item;
+    private User booker;
     private Status status;
 
     public BookingResponceDto(long id, LocalDateTime start, LocalDateTime end, Item item, User booker, Status status) {

@@ -13,15 +13,15 @@ import java.time.LocalDateTime;
 public class BookingRequestDto {
     @Future
     @BookingDateEmpty(message = "Не указана дата начала бронирования")
-    private LocalDateTime start;           // дата и время начала бронирования
+    private LocalDateTime start;
 
     @Future
     @BookingDateEmpty(message = "Не указана дата окончания бронирования")
-    private LocalDateTime end;             // дата и время конца бронирования
+    private LocalDateTime end;
 
-    private long itemId;            // вещь, которую пользователь бронирует
+    private long itemId;
 
-    private long booker;          // пользователь, который осуществляет бронирование
+    private long booker;
 
     public BookingRequestDto(LocalDateTime start, LocalDateTime end, long itemId, long booker) {
         this.start = start;
