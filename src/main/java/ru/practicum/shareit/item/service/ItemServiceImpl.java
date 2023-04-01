@@ -65,24 +65,37 @@ public class ItemServiceImpl {
         List<CommentResponceDto> comments = commentRepo.findAllByItemId(itemId).stream()
                 .map(c -> commentMapper.toCommentResponceDto(c))
                 .collect(Collectors.toList());
-        return new ItemWithBookingResponceDto(
-                item.get().getId(),
-                item.get().getName(),
-                item.get().getDescription(),
-                item.get().getAvailable(),
-                item.get().getOwner(),
-                specialLastBooking,
-                specialNextBooking,
-                item.get().getRequest() != null ? item.get().getRequest().getId() : null,
-                comments
-        );
+        return ItemWithBookingResponceDto.builder()
+                .id(item.get().getId())
+                .name(item.get().getName())
+                .description(item.get().getDescription())
+                .available(item.get().getAvailable())
+                .owner(item.get().getOwner())
+                .lastBooking(specialLastBooking)
+                .nextBooking(specialNextBooking)
+                .request(item.get().getRequest() != null ? item.get().getRequest().getId() : null)
+                .comments(comments)
+                .build();
+//        return new ItemWithBookingResponceDto(
+//                item.get().getId(),
+//                item.get().getName(),
+//                item.get().getDescription(),
+//                item.get().getAvailable(),
+//                item.get().getOwner(),
+//                specialLastBooking,
+//                specialNextBooking,
+//                item.get().getRequest() != null ? item.get().getRequest().getId() : null,
+//                comments
+//        );
     }
 
     public List<ItemWithBookingResponceDto> getAllItemsByUserId(long userId) {
         List<ItemWithBookingResponceDto> responceDto = new ArrayList<>();
         for (Item item : itemRepo.findAllByOwner(userId)) {
-            SpecialBookingDto specialLastBooking = new SpecialBookingDto();
-            SpecialBookingDto specialNextBooking = new SpecialBookingDto();
+            SpecialBookingDto specialLastBooking = SpecialBookingDto.builder().build();
+            SpecialBookingDto specialNextBooking = SpecialBookingDto.builder().build();
+//            SpecialBookingDto specialLastBooking = new SpecialBookingDto();
+//            SpecialBookingDto specialNextBooking = new SpecialBookingDto();
             var lastBooking = bookingRepo.getLastBookingByItemId(item.getId());
             var nextBooking = (bookingRepo.getNextBookingByItemId(item.getId()));
             if (lastBooking != null && nextBooking != null) {
@@ -95,18 +108,29 @@ public class ItemServiceImpl {
             List<CommentResponceDto> comments = commentRepo.findAllByItemId(item.getId()).stream()
                     .map(c -> commentMapper.toCommentResponceDto(c))
                     .collect(Collectors.toList());
+            responceDto.add(ItemWithBookingResponceDto.builder()
+                    .id(item.getId())
+                    .name(item.getName())
+                    .description(item.getDescription())
+                    .available(item.getAvailable())
+                    .owner(item.getOwner())
+                    .lastBooking(specialLastBooking)
+                    .nextBooking(specialNextBooking)
+                    .request(item.getRequest() != null ? item.getRequest().getId() : null)
+                    .comments(comments)
+                    .build());
 
-            responceDto.add(new ItemWithBookingResponceDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    item.getOwner(),
-                    specialLastBooking,
-                    specialNextBooking,
-                    item.getRequest() != null ? item.getRequest().getId() : null,
-                    comments
-            ));
+//            responceDto.add(new ItemWithBookingResponceDto(
+//                    item.getId(),
+//                    item.getName(),
+//                    item.getDescription(),
+//                    item.getAvailable(),
+//                    item.getOwner(),
+//                    specialLastBooking,
+//                    specialNextBooking,
+//                    item.getRequest() != null ? item.getRequest().getId() : null,
+//                    comments
+//            ));
         }
         return  responceDto;
     }

@@ -110,11 +110,13 @@ public class BookingServiceImpl {
         }
         if (approved.equals("true")) {
             booking.get().setStatus(Status.APPROVED);
-            return BookingMapper.toApproveBookingResponceDto(bookingRepo.save(booking.get()));
+            //return BookingMapper.toApproveBookingResponceDto(bookingRepo.save(booking.get()));
+            return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
         }
         if (approved.equals("false")) {
             booking.get().setStatus(Status.REJECTED);
-            return BookingMapper.toApproveBookingResponceDto(bookingRepo.save(booking.get()));
+            //return BookingMapper.toApproveBookingResponceDto(bookingRepo.save(booking.get()));
+            return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
         }
         throw new InvalidParameterException("Указан неверный параметр: approved");
     }

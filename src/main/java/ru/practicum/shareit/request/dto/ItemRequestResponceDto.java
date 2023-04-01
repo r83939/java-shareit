@@ -1,9 +1,11 @@
 package ru.practicum.shareit.request.dto;
 
+import lombok.Builder;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Date;
 
+@Builder
 public class ItemRequestResponceDto {
 
     private long id;
@@ -14,10 +16,10 @@ public class ItemRequestResponceDto {
 
     private Date created;
 
-    public ItemRequestResponceDto(long id, String description, User requester, Date created) {
-        this.id = id;
-        this.description = description;
-        this.requester = requester;
-        this.created = created;
-    }
+//    public ItemRequestResponceDto(long id, String description, User requester, Date created) {
+//        this.id = id;
+//        this.description = description;
+//        this.requester = requester;
+//        this.created = created;
+//    }
 }

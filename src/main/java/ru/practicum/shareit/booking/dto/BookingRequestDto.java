@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.domain.validator.BookingDateEmpty;
@@ -22,11 +23,4 @@ public class BookingRequestDto {
     private long itemId;
 
     private long booker;
-
-    public BookingRequestDto(LocalDateTime start, LocalDateTime end, long itemId, long booker) {
-        this.start = start;
-        this.end = end;
-        this.itemId = itemId;
-        this.booker = booker;
-    }
 }
