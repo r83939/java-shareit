@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
-    private final String USERID = "X-Sharer-User-Id";
+    static final String USERID = "X-Sharer-User-Id";
     private final ItemRequestRequestServiceImpl itemRequestRequestServiceImpl;
 
     @Autowired

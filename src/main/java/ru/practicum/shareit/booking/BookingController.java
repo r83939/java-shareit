@@ -17,8 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/bookings")
 public class BookingController {
-    
-    private final String USERID = "X-Sharer-User-Id";
+    static final String USERID = "X-Sharer-User-Id";
     private final BookingServiceImpl bookingServiceImpl;
 
     @Autowired
