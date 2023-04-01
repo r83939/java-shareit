@@ -19,14 +19,4 @@ public class ItemResponceDto {
     private User owner;
     private Long request;
     private List<CommentResponceDto> comments;
-
-//    public ItemResponceDto(long id, String name, String description, Boolean available, User owner, Long request, List<CommentResponceDto> comments) {
-//        this.id = id;
-//        this.name = name;
-//        this.description = description;
-//        this.available = available;
-//        this.owner = owner;
-//        this.request = request;
-//        this.comments = comments;
-//    }
 }

@@ -7,7 +7,6 @@ import java.util.Date;
 
 @Builder
 public class ItemRequestResponceDto {
-
     private long id;
 
     private String description;
@@ -15,11 +14,4 @@ public class ItemRequestResponceDto {
     private User requester;
 
     private Date created;
-
-//    public ItemRequestResponceDto(long id, String description, User requester, Date created) {
-//        this.id = id;
-//        this.description = description;
-//        this.requester = requester;
-//        this.created = created;
-//    }
 }

@@ -11,11 +11,4 @@ import javax.validation.constraints.NotEmpty;
 public class CommentRequestDto {
     @NotEmpty
     private String text;
-
-//    public CommentRequestDto() {
-//    }
-//
-//    public CommentRequestDto(String text) {
-//        this.text = text;
-//    }
 }

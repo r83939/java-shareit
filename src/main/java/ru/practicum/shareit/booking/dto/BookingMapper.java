@@ -15,15 +15,4 @@ public class BookingMapper {
                 booking.getStatus()
         );
     }
-
-//    public static BookingResponceDto toApproveBookingResponceDto(Booking booking) {
-//        return new BookingResponceDto(
-//                booking.getId(),
-//                booking.getStart(),
-//                booking.getEnd(),
-//                booking.getItem(),
-//                booking.getBooker(),
-//                booking.getStatus()
-//        );
-//    }
 }

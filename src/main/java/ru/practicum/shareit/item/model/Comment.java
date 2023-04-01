@@ -30,7 +30,6 @@ public class Comment {
     @JoinColumn(name = "item_id")
     @JsonIgnore
     private Item item;
-
     @Column(name = "created")
     private LocalDateTime created;
 }

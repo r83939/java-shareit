@@ -19,13 +19,4 @@ public class BookingResponceDto {
     private Item item;
     private User booker;
     private Status status;
-
-//    public BookingResponceDto(long id, LocalDateTime start, LocalDateTime end, Item item, User booker, Status status) {
-//        this.id = id;
-//        this.start = start;
-//        this.end = end;
-//        this.item = item;
-//        this.booker = booker;
-//        this.status = status;
-//    }
 }

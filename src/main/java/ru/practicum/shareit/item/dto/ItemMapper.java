@@ -8,18 +8,6 @@ import java.util.List;
 
 @Component
 public class ItemMapper {
-
-//    public static ItemRequestDto toItemDto(Item item) {
-//       return new ItemRequestDto(
-//              item.getId(),
-//                item.getName(),
-//                item.getDescription(),
-//                item.getAvailable(),
-//                item.getOwner()
-//        );
-//    }
-
-
     public static ItemResponceDto toItemResponceDto(Item item, List<CommentResponceDto> comments) {
         return new ItemResponceDto(
                 item.getId(),
@@ -38,22 +26,5 @@ public class ItemMapper {
                 booking.getBooker().getId()
         );
     }
-
-//    public static  ItemWithBookingResponceDto(Item item,
-//                                             List<CommentResponceDto> comments,
-//                                             SpecialBookingDto specialLastBooking,
-//                                             SpecialBookingDto specialNextBooking) {
-//        return new ItemWithBookingResponceDto(
-//                item.getId(),
-//                item.getName(),
-//                item.getDescription(),
-//                item.getAvailable(),
-//                item.getOwner(),
-//                specialLastBooking,
-//                specialNextBooking,
-//                item.getRequest() != null ? item.getRequest().getId() : null,
-//                comments
-//        );
-//    }
 }
 

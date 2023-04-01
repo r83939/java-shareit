@@ -20,25 +20,4 @@ public class ItemWithBookingResponceDto {
     private SpecialBookingDto nextBooking;
     private Long request;
     private List<CommentResponceDto> comments;
-
-//    public ItemWithBookingResponceDto(long id,
-//                                      String name,
-//                                      String description,
-//                                      Boolean available,
-//                                      User owner,
-//                                      SpecialBookingDto lastBooking,
-//                                      SpecialBookingDto nextBooking,
-//                                      Long request,
-//                                      List<CommentResponceDto> comments) {
-//
-//        this.id = id;
-//        this.name = name;
-//        this.description = description;
-//        this.available = available;
-//        this.owner = owner;
-//        this.lastBooking = lastBooking;
-//        this.nextBooking = nextBooking;
-//        this.request = request;
-//        this.comments = comments;
-//    }
 }

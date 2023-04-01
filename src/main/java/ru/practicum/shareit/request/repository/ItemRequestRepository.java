@@ -6,6 +6,4 @@ import ru.practicum.shareit.request.model.ItemRequest;
 
 @Repository
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long>  {
-
-
 }

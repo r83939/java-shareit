@@ -76,17 +76,6 @@ public class ItemServiceImpl {
                 .request(item.get().getRequest() != null ? item.get().getRequest().getId() : null)
                 .comments(comments)
                 .build();
-//        return new ItemWithBookingResponceDto(
-//                item.get().getId(),
-//                item.get().getName(),
-//                item.get().getDescription(),
-//                item.get().getAvailable(),
-//                item.get().getOwner(),
-//                specialLastBooking,
-//                specialNextBooking,
-//                item.get().getRequest() != null ? item.get().getRequest().getId() : null,
-//                comments
-//        );
     }
 
     public List<ItemWithBookingResponceDto> getAllItemsByUserId(long userId) {
@@ -94,8 +83,6 @@ public class ItemServiceImpl {
         for (Item item : itemRepo.findAllByOwner(userId)) {
             SpecialBookingDto specialLastBooking = SpecialBookingDto.builder().build();
             SpecialBookingDto specialNextBooking = SpecialBookingDto.builder().build();
-//            SpecialBookingDto specialLastBooking = new SpecialBookingDto();
-//            SpecialBookingDto specialNextBooking = new SpecialBookingDto();
             var lastBooking = bookingRepo.getLastBookingByItemId(item.getId());
             var nextBooking = (bookingRepo.getNextBookingByItemId(item.getId()));
             if (lastBooking != null && nextBooking != null) {
@@ -119,18 +106,6 @@ public class ItemServiceImpl {
                     .request(item.getRequest() != null ? item.getRequest().getId() : null)
                     .comments(comments)
                     .build());
-
-//            responceDto.add(new ItemWithBookingResponceDto(
-//                    item.getId(),
-//                    item.getName(),
-//                    item.getDescription(),
-//                    item.getAvailable(),
-//                    item.getOwner(),
-//                    specialLastBooking,
-//                    specialNextBooking,
-//                    item.getRequest() != null ? item.getRequest().getId() : null,
-//                    comments
-//            ));
         }
         return  responceDto;
     }
