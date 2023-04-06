@@ -28,11 +28,28 @@ public class ItemRequestController {
         return itemRequestRequestServiceImpl.addItemRequest(userId, itemRequest);
     }
 
+    @GetMapping("/{id}")
+    public List<ItemRequestResponceDto> getOwnRequests(@RequestHeader(USERID) Long userId,
+                                                       @PathVariable long requestId) {
+
+        return itemRequestRequestServiceImpl.getItemRequest(userId, requestId);
+    }
+
     @GetMapping()
-    public List<ItemRequestResponceDto> createUser(@RequestHeader(USERID) Long userId) {
+    public List<ItemRequestResponceDto> getOwnRequests(@RequestHeader(USERID) Long userId) {
 
         return itemRequestRequestServiceImpl.getItemRequests(userId);
     }
+
+    @GetMapping("/all")
+    public List<ItemRequestResponceDto> getRequests(@RequestHeader(USERID) Long userId,
+                                                    @RequestParam(value = "from", required = true) Integer from,
+                                                    @RequestParam(value = "size", required = true) Integer size) {
+
+        return itemRequestRequestServiceImpl.getItemRequests(userId);
+    }
+
+
 
     @PatchMapping("/{id}")
     public ItemRequestResponceDto updateItemRequestRequest(@RequestHeader(USERID) Long userId,

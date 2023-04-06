@@ -35,4 +35,8 @@ public class ItemRequestRequestServiceImpl {
     public ItemRequestResponceDto deleteItemRequest(Long userId, Long id) {
         return null;
     }
+
+    public List<ItemRequestResponceDto> getItemRequest(Long userId, long requestId) {
+        return null;
+    }
 }
