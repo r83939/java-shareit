@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-
 public class ItemRequestDto {
     private long id;
     @NotEmpty

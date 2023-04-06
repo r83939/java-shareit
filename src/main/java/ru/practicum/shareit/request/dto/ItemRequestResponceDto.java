@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.dto;
 import lombok.Builder;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Builder
@@ -13,5 +14,5 @@ public class ItemRequestResponceDto {
 
     private User requester;
 
-    private Date created;
+    private LocalDateTime created;
 }
