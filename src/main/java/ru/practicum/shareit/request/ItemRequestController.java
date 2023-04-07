@@ -24,24 +24,18 @@ public class ItemRequestController {
 
     @PostMapping()
     public ItemRequestResponceDto createItemRequestRequest(@RequestHeader(USERID) Long userId,
-                                                           @RequestBody @Valid ItemRequestRequestDto itemRequest) throws EntityNotFoundException {
+                                                           @Valid @RequestBody ItemRequestRequestDto itemRequest) throws EntityNotFoundException {
 
         return itemRequestServiceImpl.addItemRequest(userId, itemRequest);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{requestId}")
     public ItemRequestResponceDto getRequestById(@RequestHeader(USERID) Long userId,
                                                        @PathVariable long requestId) {
 
         return itemRequestServiceImpl.getItemRequest(userId, requestId);
     }
 
-    @GetMapping()
-    public List<ItemRequestResponceDto> getOwnRequests(@RequestHeader(USERID) Long userId,
-                                                       @PathVariable long requestId) {
-
-        return itemRequestServiceImpl.getItemRequests(userId, requestId);
-    }
 
     @GetMapping()
     public List<ItemRequestResponceDto> getOwnRequests(@RequestHeader(USERID) Long userId) throws EntityNotFoundException {
@@ -51,8 +45,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestResponceDto> getRequests(@RequestHeader(USERID) Long userId,
-                                                    @RequestParam(value = "from", required = true) Integer from,
-                                                    @RequestParam(value = "size", required = true) Integer size) {
+                                                    @RequestParam(value = "from", required = false) Integer from,
+                                                    @RequestParam(value = "size", required = false) Integer size) throws EntityNotFoundException {
 
         return itemRequestServiceImpl.getItemRequests(userId, from, size);
     }

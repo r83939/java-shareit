@@ -5,6 +5,8 @@ import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -23,7 +25,7 @@ public class ItemRequest {
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "requestor_id")
+    @JoinColumn(name = "requester_id")
     private User requester;
 
     @Column(name = "created")

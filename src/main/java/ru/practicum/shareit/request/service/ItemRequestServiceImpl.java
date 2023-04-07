@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.service;
 
+import javassist.expr.NewArray;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,9 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,8 +48,31 @@ public class ItemRequestServiceImpl {
         return itemRequestMapper.toItemRequestResponceDto(addedItemRequest);
     }
 
-    public List<ItemRequestResponceDto> getItemRequests(Long userId, Integer from, Integer size) {
-        return null;
+    public List<ItemRequestResponceDto> getItemRequests(Long userId, Integer from, Integer size) throws EntityNotFoundException {
+        Optional<User> user = userRepo.findById(userId);
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
+        }
+        if (from != null && size != null) {
+            List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllNotOwnRequests(userId).stream()
+                    .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
+                    .collect(Collectors.toList());
+            if (from <= itemRequestResponceDtos.size() && size <= itemRequestResponceDtos.size()) {
+                return itemRequestResponceDtos.subList(from, (from + size) - 1);
+            }
+            else if (from <= itemRequestResponceDtos.size() && size > itemRequestResponceDtos.size()) {
+                return itemRequestResponceDtos.subList(from, itemRequestResponceDtos.size() - 1);
+            }
+            else {
+                return itemRequestResponceDtos;
+            }
+        }
+        else {
+            List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllNotOwnRequests(userId).stream()
+                    .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
+                    .collect(Collectors.toList());
+            return itemRequestResponceDtos;
+        }
     }
 
     public ItemRequestResponceDto updateItemRequest(Long userId, ItemRequestRequestDto itemRequest) {
@@ -57,7 +83,7 @@ public class ItemRequestServiceImpl {
         return null;
     }
 
-    public List<ItemRequestResponceDto> getItemRequests(Long userId, long requestId) {
+    public List<ItemRequestResponceDto> getItemRequests(Long userId, Long requestId) {
         return null;
     }
 
@@ -66,12 +92,14 @@ public class ItemRequestServiceImpl {
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
-        return itemRequestRepo.getAllByRequesterOrderByCreatedDesc(userId).stream()
+        List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllByRequesterIdOrderByCreatedDesc(userId).stream()
                 .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
                 .collect(Collectors.toList());
+        return itemRequestResponceDtos;
     }
 
     public ItemRequestResponceDto getItemRequest(Long userId, long requestId) {
+        return null;
 
     }
 }
