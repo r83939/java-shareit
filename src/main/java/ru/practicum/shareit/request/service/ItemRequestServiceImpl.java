@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.exception.InvalidParameterException;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestResponceDto;
@@ -48,31 +49,39 @@ public class ItemRequestServiceImpl {
         return itemRequestMapper.toItemRequestResponceDto(addedItemRequest);
     }
 
-    public List<ItemRequestResponceDto> getItemRequests(Long userId, Integer from, Integer size) throws EntityNotFoundException {
+    public List<ItemRequestResponceDto> getItemRequests(Long userId, Integer from, Integer size) throws EntityNotFoundException, InvalidParameterException {
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
-        if (from != null && size != null) {
-            List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllNotOwnRequests(userId).stream()
-                    .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
-                    .collect(Collectors.toList());
-            if (from <= itemRequestResponceDtos.size() && size <= itemRequestResponceDtos.size()) {
-                return itemRequestResponceDtos.subList(from, (from + size) - 1);
-            }
-            else if (from <= itemRequestResponceDtos.size() && size > itemRequestResponceDtos.size()) {
-                return itemRequestResponceDtos.subList(from, itemRequestResponceDtos.size() - 1);
-            }
-            else {
-                return itemRequestResponceDtos;
-            }
-        }
-        else {
-            List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllNotOwnRequests(userId).stream()
+        if (from >= 0 && size > 0) {
+            List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllNotOwnRequestsWithPagination(userId, from, size).stream()
                     .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
                     .collect(Collectors.toList());
             return itemRequestResponceDtos;
         }
+        else {
+            throw new InvalidParameterException("Не верно заданы значения пагинации");
+        }
+    }
+
+    public List<ItemRequestResponceDto> getOwnItemRequests(Long userId) throws EntityNotFoundException {
+        Optional<User> user = userRepo.findById(userId);
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
+        }
+        List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllByRequesterIdOrderByCreatedDesc(userId).stream()
+                .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
+                .collect(Collectors.toList());
+        return itemRequestResponceDtos;
+    }
+
+    public ItemRequestResponceDto getItemRequest(Long userId, long requestId) throws EntityNotFoundException {
+        Optional<User> user = userRepo.findById(userId);
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
+        }
+        return itemRequestMapper.toItemRequestResponceDto(itemRequestRepo.getById(requestId));
     }
 
     public ItemRequestResponceDto updateItemRequest(Long userId, ItemRequestRequestDto itemRequest) {
@@ -87,19 +96,5 @@ public class ItemRequestServiceImpl {
         return null;
     }
 
-    public List<ItemRequestResponceDto> getOwnItemRequests(Long userId) throws EntityNotFoundException {
-        Optional<User> user = userRepo.findById(userId);
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
-        }
-        List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllByRequesterIdOrderByCreatedDesc(userId).stream()
-                .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
-                .collect(Collectors.toList());
-        return itemRequestResponceDtos;
-    }
 
-    public ItemRequestResponceDto getItemRequest(Long userId, long requestId) {
-        return null;
-
-    }
 }

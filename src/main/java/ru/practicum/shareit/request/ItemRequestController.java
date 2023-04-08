@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.EntityNotFoundException;
+import ru.practicum.shareit.exception.InvalidParameterException;
 import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestResponceDto;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
@@ -31,7 +32,7 @@ public class ItemRequestController {
 
     @GetMapping("/{requestId}")
     public ItemRequestResponceDto getRequestById(@RequestHeader(USERID) Long userId,
-                                                       @PathVariable long requestId) {
+                                                       @PathVariable long requestId) throws EntityNotFoundException {
 
         return itemRequestServiceImpl.getItemRequest(userId, requestId);
     }
@@ -46,7 +47,7 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<ItemRequestResponceDto> getRequests(@RequestHeader(USERID) Long userId,
                                                     @RequestParam(value = "from", required = false) Integer from,
-                                                    @RequestParam(value = "size", required = false) Integer size) throws EntityNotFoundException {
+                                                    @RequestParam(value = "size", required = false) Integer size) throws EntityNotFoundException, InvalidParameterException {
 
         return itemRequestServiceImpl.getItemRequests(userId, from, size);
     }
