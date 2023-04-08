@@ -51,10 +51,16 @@ public class ItemRequestServiceImpl {
 
     public List<ItemRequestResponceDto> getItemRequests(Long userId, Integer from, Integer size) throws EntityNotFoundException, InvalidParameterException {
         Optional<User> user = userRepo.findById(userId);
-        if (user.isEmpty()) {
+        if (!user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
-        if (from >= 0 && size > 0) {
+        if (from == null && size == null) {
+            List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllNotOwnRequests(userId).stream()
+                    .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
+                    .collect(Collectors.toList());
+            return itemRequestResponceDtos;
+        }
+        if ( from >= 0 && size > 0) {
             List<ItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllNotOwnRequestsWithPagination(userId, from, size).stream()
                     .map(i -> itemRequestMapper.toItemRequestResponceDto(i))
                     .collect(Collectors.toList());
