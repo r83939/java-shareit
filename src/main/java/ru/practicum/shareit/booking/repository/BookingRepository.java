@@ -1,5 +1,9 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +18,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findBookingsByBookerIdOrderByStartDesc(@Param("booker_id") Long id);
 
+    @Query(value = "SELECT * FROM bookings b " +
+            "WHERE b.booker_id = :booker_id " +
+            "ORDER BY b.start_date DESC LIMIT :from, :size", nativeQuery = true)
+    List<Booking> findBookingsWithPagination(@Param("booker_id") Long id,
+                                             @Param("from") int from,
+                                             @Param("size") int size);
+
+    Page<Booking> findBookingsByBookerId(@Param("booker_id") Long id, Pageable pageable);
+
     List<Booking> findBookingByBookerIdAndStatus(Long userId, Status status);
 
     @Query(value = "SELECT * FROM bookings b WHERE b.booker_id = id AND b.status like 'CURRENT'",
@@ -25,6 +38,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "ORDER BY b.start_date DESC ",
             nativeQuery = true)
     List<Booking> findBookingByOwnerId(@Param("user_id") Long userId);
+
+    @Query(value = "SELECT * FROM bookings b WHERE b.item_id " +
+            "IN (SELECT i.id FROM items i WHERE i.user_id = :user_id) " +
+            "ORDER BY b.start_date DESC LIMIT :from, :size",
+            nativeQuery = true)
+    List<Booking> findBookingByOwnerIdWithPagination(@Param("user_id") Long userId,
+                                                     @Param("from") int from,
+                                                     @Param("size") int size);
 
     @Query(value = "SELECT * FROM bookings b " +
             "WHERE item_id = :item_id " +

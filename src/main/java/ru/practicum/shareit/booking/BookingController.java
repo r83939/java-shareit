@@ -40,20 +40,24 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public BookingResponceDto approveBooking(@RequestHeader(value = USERID, required = true) Long userId,
-                                            @PathVariable long bookingId,
-                                            @RequestParam(value = "approved", required = true) String approved) throws InvalidParameterException, EntityNotFoundException {
+                                             @PathVariable long bookingId,
+                                             @RequestParam(value = "approved", required = true) String approved) throws InvalidParameterException, EntityNotFoundException {
         return bookingServiceImpl.approveBooking(userId, bookingId, approved);
     }
 
     @GetMapping()
     public List<BookingResponceDto> getBookings(@RequestHeader(value = USERID, required = true) Long userId,
-                                                       @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
-        return bookingServiceImpl.getBookingsByUserIdAndState(userId, state);
+                                                @RequestParam(value = "state", required = false, defaultValue = "ALL") String state,
+                                                @RequestParam(value = "from", required = false) Integer from,
+                                                @RequestParam(value = "size", required = false) Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
+        return bookingServiceImpl.getBookingsByUserIdAndState(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingResponceDto> getOwnBookingsByUserId(@RequestHeader(value = USERID, required = true) Long userId,
-                                                          @RequestParam(value = "state", required = false, defaultValue = "ALL") String state) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
-        return bookingServiceImpl.getOwnBookingsByUserId(userId, state);
+                                                           @RequestParam(value = "state", required = false, defaultValue = "ALL") String state,
+                                                           @RequestParam(value = "from", required = false) Integer from,
+                                                           @RequestParam(value = "size", required = false) Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
+        return bookingServiceImpl.getOwnBookingsByUserId(userId, state, from, size);
     }
 }
