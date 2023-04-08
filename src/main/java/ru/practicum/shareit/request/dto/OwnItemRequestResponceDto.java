@@ -6,13 +6,13 @@ import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
+
 
 @Getter
 @Setter
 @Builder
-public class ItemRequestResponceDto {
+public class OwnItemRequestResponceDto {
 
     private long id;
 
@@ -21,4 +21,6 @@ public class ItemRequestResponceDto {
     private User requester;
 
     private LocalDateTime created;
+
+    private List<ItemDto> items;
 }

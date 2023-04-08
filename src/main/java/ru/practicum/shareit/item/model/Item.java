@@ -37,7 +37,7 @@ public class Item {
     @JoinColumn(name = "user_id")
     private User owner;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     private ItemRequest request;
 }

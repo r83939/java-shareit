@@ -13,6 +13,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -32,15 +34,17 @@ public class ItemServiceImpl {
     private final CommentRepository commentRepo;
     private final ItemMapper itemMapper;
     private final CommentMapper commentMapper;
+    private final ItemRequestRepository itemRequestRepo;
 
     @Autowired
-    public ItemServiceImpl(BookingRepository bookingRepo, ItemRepository itemRepo, ItemMapper itemMapper, UserRepository userRepo, CommentRepository commentRepo, CommentMapper commentMapper) {
+    public ItemServiceImpl(BookingRepository bookingRepo, ItemRepository itemRepo, ItemMapper itemMapper, UserRepository userRepo, CommentRepository commentRepo, CommentMapper commentMapper, ItemRequestRepository itemRequestRepo) {
         this.bookingRepo = bookingRepo;
         this.itemRepo = itemRepo;
         this.itemMapper = itemMapper;
         this.userRepo = userRepo;
         this.commentRepo = commentRepo;
         this.commentMapper = commentMapper;
+        this.itemRequestRepo = itemRequestRepo;
     }
 
     public ItemWithBookingResponceDto getItemById(long userId, long itemId) throws EntityNotFoundException {
@@ -115,12 +119,15 @@ public class ItemServiceImpl {
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
-        //List<Comment> comments = new ArrayList<>();
         Item item = new Item();
         item.setOwner(user.get());
         item.setName(itemRequestDto.getName());
         item.setDescription(itemRequestDto.getDescription());
         item.setAvailable(itemRequestDto.getAvailable());
+        Optional<ItemRequest> itemRequest = itemRequestRepo.findById(itemRequestDto.getRequestId());
+        if (itemRequest.isPresent()) {
+            item.setRequest(itemRequest.get());
+        }
         Item savedItem = itemRepo.save(item);
         return itemMapper.toItemResponceDto(savedItem, new ArrayList<>());
     }
