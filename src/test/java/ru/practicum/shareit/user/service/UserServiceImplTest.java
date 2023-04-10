@@ -2,9 +2,14 @@ package ru.practicum.shareit.user.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import ru.practicum.shareit.domain.validator.UserValidator;
 import ru.practicum.shareit.exception.DuplicateEmailException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidParameterException;
@@ -19,12 +24,20 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private UserValidator userValidator;
+
     @InjectMocks
     private UserServiceImpl userService;
+
+    @Captor
+    private ArgumentCaptor<User> userArgumentCaptor;
+
     @Test
     void getUserById_whenUserFound_thenReturnUser() throws EntityNotFoundException {
         long userId = 0L;
@@ -67,20 +80,42 @@ class UserServiceImplTest {
         addUser.setId(1L);
         addUser.setEmail("user1@mail.ru");
         addUser.setName("user1");
-        when(userService.addUser(addUser)).thenThrow(DuplicateEmailException.class);
+        doThrow(InvalidParameterException.class)
+                .when(userValidator).newUserValidate(addUser);
 
 
-        assertThrows(DuplicateEmailException.class,
+        assertThrows(InvalidParameterException.class,
                 () -> userService.addUser(addUser));
 
         verify(userRepository, never()).save(addUser);
     }
 
     @Test
-    void updateUser() {
+    void updateUser() throws DuplicateEmailException, EntityNotFoundException {
+        Long userId = 1L;
+        User oldUser = new User();
+        oldUser.setId(0L);
+        oldUser.setEmail("user1@mail.ru");
+        oldUser.setName("user1");
+
+        User newUser = new User();
+        newUser.setId(1L);
+        newUser.setEmail("user2@mail.ru");
+        newUser.setName("user2");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(oldUser));
+        when(userRepository.save(newUser)).thenReturn(newUser);
+
+        UserDto actualUser = userService.updateUser(newUser);
+
+        verify(userRepository).save(userArgumentCaptor.capture());
+        UserDto savedUser = UserMapper.toUserDto(userArgumentCaptor.getValue());
+
+        assertEquals("user2", savedUser.getName());
+        assertEquals("user2@mail.ru", savedUser.getEmail());
     }
 
     @Test
-    void deleteUser() {
+    void deleteUser( ) {
     }
 }

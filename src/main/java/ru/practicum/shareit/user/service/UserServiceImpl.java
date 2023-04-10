@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.domain.validator.UserValidator;
 import ru.practicum.shareit.exception.DuplicateEmailException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidParameterException;
@@ -21,11 +22,13 @@ import java.util.stream.Collectors;
 public class UserServiceImpl {
     private final UserRepository userRepo;
     private final UserMapper userMapper;
+    private final UserValidator userValidator;
 
     @Autowired
-    public UserServiceImpl(@Qualifier("userRepository") UserRepository userRepo, UserMapper userMapper) {
+    public UserServiceImpl(@Qualifier("userRepository") UserRepository userRepo, UserMapper userMapper, UserValidator userValidator) {
         this.userRepo = userRepo;
         this.userMapper = userMapper;
+        this.userValidator = userValidator;
     }
 
     public UserDto getUserById(long userId) throws EntityNotFoundException {
@@ -42,6 +45,7 @@ public class UserServiceImpl {
     }
 
     public UserDto addUser(User user) throws InvalidParameterException, DuplicateEmailException {
+        userValidator.newUserValidate(user);
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new InvalidParameterException("поле email должно быть заполнено.");
         }

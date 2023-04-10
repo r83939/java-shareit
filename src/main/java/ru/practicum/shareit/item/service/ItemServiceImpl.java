@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.domain.validator.UserValidator;
 import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidParameterException;
@@ -36,6 +37,8 @@ public class ItemServiceImpl {
     private final CommentMapper commentMapper;
     private final ItemRequestRepository itemRequestRepo;
 
+
+
     @Autowired
     public ItemServiceImpl(BookingRepository bookingRepo, ItemRepository itemRepo, ItemMapper itemMapper, UserRepository userRepo, CommentRepository commentRepo, CommentMapper commentMapper, ItemRequestRepository itemRequestRepo) {
         this.bookingRepo = bookingRepo;
@@ -45,6 +48,7 @@ public class ItemServiceImpl {
         this.commentRepo = commentRepo;
         this.commentMapper = commentMapper;
         this.itemRequestRepo = itemRequestRepo;
+
     }
 
     public ItemWithBookingResponceDto getItemById(long userId, long itemId) throws EntityNotFoundException {
