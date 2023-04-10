@@ -1,24 +1,18 @@
 package ru.practicum.shareit.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.practicum.shareit.exception.EntityNotFoundException;
+
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
@@ -27,14 +21,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,7 +47,15 @@ class UserControllerTest {
     List<UserDto> users = new ArrayList<>(Arrays.asList(user1, user2, user3));
 
     @Test
+    @SneakyThrows
     public void getUser()  {
+        long userId = 0L;
+        mockMvc.perform(get("/users/{id}", userId))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(userServiceImpl).getUserById(userId);
+
 
     }
 
@@ -65,11 +72,29 @@ class UserControllerTest {
     }
 
     @Test
-    void createUser() {
+    void createUser() throws Exception {
+        User newUser = new User();
+        newUser.setId(1L);
+        newUser.setEmail("user3@mail.ru");
+        newUser.setName("user3");
+        UserDto addedUser = new UserDto(1L,"user3@mail.ru", "user3");
+        when(userServiceImpl.addUser(newUser)).thenReturn(addedUser);
+
+        String result = mockMvc.perform(post("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(addedUser)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertEquals(objectMapper.writeValueAsString(addedUser), result);
     }
 
     @Test
     void updateUser() {
+        Long userId = 0L;
+        User userToUpdate = new User();
+        //userToUpdate.setName();
     }
 
     @Test

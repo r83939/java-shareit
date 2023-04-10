@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.DuplicateEmailException;
@@ -35,6 +36,7 @@ public class UserController {
 
         return userServiceImpl.getAllUsers();
     }
+
 
     @PostMapping()
     public UserDto createUser(@RequestBody  @Valid User user) throws DuplicateEmailException, InvalidParameterException {
