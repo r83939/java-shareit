@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +43,8 @@ class UserServiceImplTest {
 
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
+
+
 
     @Test
     void getUserById_whenUserFound_thenReturnUser() throws EntityNotFoundException {
@@ -131,7 +135,17 @@ class UserServiceImplTest {
         assertEquals("user2@mail.ru", savedUser.getEmail());
     }
 
+    @SneakyThrows
     @Test
-    void deleteUser( ) {
+    void deleteUser( )  {
+        User user = new User(1L, "user1", "user1@email.com");
+        UserDto expectUserDto = UserMapper.toUserDto(user);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        willDoNothing().given(userRepository).deleteById(1L);
+        UserDto actualUserDto =  userService.deleteUser(1L);
+
+        verify(userRepository, times(1)).deleteById(1L);
+        assertEquals(expectUserDto, actualUserDto);
     }
 }

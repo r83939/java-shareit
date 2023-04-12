@@ -6,16 +6,20 @@ import org.junit.jupiter.api.Test;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +33,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+//@WebMvcTest(UserController.class)
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc
 class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
@@ -40,27 +46,35 @@ class UserControllerTest {
     @MockBean
     private UserServiceImpl userServiceImpl;
 
-    UserDto user1 = new UserDto(1, "user1@mail.ru", "user1");
-    UserDto user2 = new UserDto(2, "user2@mail.ru", "user2");
-    UserDto user3 = new UserDto(3, "user3@mail.ru", "user3");
-    List<UserDto> users = new ArrayList<>(Arrays.asList(user1, user2, user3));
+
 
     @Test
     @SneakyThrows
-    public void getUser()  {
-        long userId = 0L;
+    public void getUser_whenUserExist_returnStatusOkAndUser()  {
+        long userId = 1L;
+        User user1 = new User(1, "user1@mail.ru", "user1");
+        UserDto userDto = UserMapper.toUserDto(user1);
+
+        when(userServiceImpl.getUserById(userId))
+                .thenReturn(userDto);
+
         mockMvc.perform(get("/users/{id}", userId))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(userDto)));
 
         verify(userServiceImpl).getUserById(userId);
-
-
     }
 
     @Test
     public void getAllUsers() throws Exception {
+        UserDto user1 = new UserDto(1, "user1@mail.ru", "user1");
+        UserDto user2 = new UserDto(2, "user2@mail.ru", "user2");
+        UserDto user3 = new UserDto(3, "user3@mail.ru", "user3");
+        List<UserDto> users = new ArrayList<>(Arrays.asList(user1, user2, user3));
+
         Mockito.when(userServiceImpl.getAllUsers()).thenReturn(users);
+
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/users")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -70,20 +84,46 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[1].name", is("user2")));
     }
 
+
     @Test
     void createUser() throws Exception {
-        User newUser = new User(1, "user3","user3@mail.ru" );
-        UserDto addedUser = new UserDto(1L,"user3@mail.ru", "user3");
-        when(userServiceImpl.addUser(newUser)).thenReturn(addedUser);
+        User newUser = new User(1L, "user3","user3@mail.ru" );
+        UserDto addedUser = UserMapper.toUserDto(newUser);
+        UserDto ud = userServiceImpl.addUser(newUser);
 
+        Mockito.when(userServiceImpl.addUser(newUser)).thenReturn(addedUser);
+
+
+        String s = objectMapper.writeValueAsString(newUser);
         String result = mockMvc.perform(post("/users")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(newUser)))
-                .andExpect(status().isOk())
+                        .content(toJson(addedUser))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType("application/json") )
+                //.andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        assertEquals(objectMapper.writeValueAsString(addedUser), result);
+        assertEquals(objectMapper.writeValueAsString(newUser), result);
+    }
+
+    @Test
+    void createUser1() throws Exception {
+        User newUser = new User(1, "user3","user3@mail.ru" );
+        UserDto addedUser = UserMapper.toUserDto(newUser);
+        when(userServiceImpl.addUser(Mockito.any(User.class)))
+                .thenReturn(addedUser);
+
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(newUser))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                //andExpect(content().json(toJson(addedUser)));
+                .andExpect(content().json(objectMapper.writeValueAsString(newUser)));
+    }
+    private String toJson(UserDto dto) {
+        return String.format("{\"id\":%d,\"name\": %s,\"email\": %s}", dto.getId(), dto.getName(), dto.getEmail());
     }
 
     @Test
@@ -96,4 +136,21 @@ class UserControllerTest {
     @Test
     void deleteUser() {
     }
+
+    @Test
+    public void addUserCheckJsonTest() throws Exception {
+        User newUser = new User(1, "user3","user3@mail.ru" );
+        UserDto addedUser = UserMapper.toUserDto(newUser);
+        when(userServiceImpl.addUser(Mockito.any(User.class)))
+                .thenReturn(addedUser);
+        mockMvc.perform(post("/users")
+                        .content(objectMapper.writeValueAsString(newUser))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name", is("user1")))
+                .andExpect(jsonPath("$.email", is("u1@user.com")));
+
+    }
+
 }
