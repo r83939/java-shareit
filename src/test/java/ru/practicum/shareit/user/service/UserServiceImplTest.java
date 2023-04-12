@@ -18,7 +18,11 @@ import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -42,6 +46,8 @@ class UserServiceImplTest {
     void getUserById_whenUserFound_thenReturnUser() throws EntityNotFoundException {
         long userId = 0L;
         User expectedUser = new User();
+        expectedUser.setName("user1");
+        expectedUser.setEmail("user1@mail.ru");
         when(userRepository.findById(userId)).thenReturn(Optional.of(expectedUser));
 
         UserDto actualUser = userService.getUserById(userId);
@@ -59,10 +65,20 @@ class UserServiceImplTest {
 
     @Test
     void getAllUsers() {
+        User user1 = new User(1,"User1", "user1@mail.ru");
+        User user2 = new User(2,"User2", "user2@mail.ru");
+        List<User> users = new ArrayList<>(Arrays.asList(user1, user2));
+        List<UserDto> expectUsers = users.stream().map(u -> UserMapper.toUserDto(u)).collect(Collectors.toList());
+        when(userRepository.findAll()).thenReturn(users) ;
+
+        List<UserDto> actualUsers = userService.getAllUsers();
+
+        assertEquals(expectUsers, actualUsers);
+        assertEquals(2, actualUsers.size());
     }
 
     @Test
-    void addUser_whenNewUserValid_thenSaveUser() throws InvalidParameterException, DuplicateEmailException {
+    void addUser_whenNewUserValid_thenSaveUser() throws InvalidParameterException {
         User addUser = new User();
         addUser.setEmail("user1@mail.ru");
         addUser.setName("user1");

@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -73,16 +72,13 @@ class UserControllerTest {
 
     @Test
     void createUser() throws Exception {
-        User newUser = new User();
-        newUser.setId(1L);
-        newUser.setEmail("user3@mail.ru");
-        newUser.setName("user3");
+        User newUser = new User(1, "user3","user3@mail.ru" );
         UserDto addedUser = new UserDto(1L,"user3@mail.ru", "user3");
         when(userServiceImpl.addUser(newUser)).thenReturn(addedUser);
 
         String result = mockMvc.perform(post("/users")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(addedUser)))
+                        .content(objectMapper.writeValueAsString(newUser)))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

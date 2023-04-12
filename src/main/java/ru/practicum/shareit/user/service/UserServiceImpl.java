@@ -44,17 +44,14 @@ public class UserServiceImpl {
                 .collect(Collectors.toList());
     }
 
-    public UserDto addUser(User user) throws InvalidParameterException, DuplicateEmailException {
+    public UserDto addUser(User user) throws InvalidParameterException {
         userValidator.newUserValidate(user);
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new InvalidParameterException("поле email должно быть заполнено.");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            throw new InvalidParameterException("поле name должно быть заполнено.");
-        }
-        if (userRepo.existsByEmail(user.getEmail())) {
-            throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется другим пользователем");
-        }
+//        if (user.getEmail() == null || user.getEmail().isBlank()) {
+//            throw new InvalidParameterException("поле email должно быть заполнено.");
+//        }
+//        if (user.getName() == null || user.getName().isBlank()) {
+//            throw new InvalidParameterException("поле name должно быть заполнено.");
+//        }
         return userMapper.toUserDto(userRepo.save(user));
     }
 

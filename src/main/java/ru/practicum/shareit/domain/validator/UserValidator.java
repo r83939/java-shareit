@@ -17,19 +17,7 @@ public class UserValidator {
         this.userRepo = userRepo;
     }
 
-    public void newUserValidate(User user) throws InvalidParameterException, DuplicateEmailException {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new InvalidParameterException("поле email должно быть заполнено.");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            throw new InvalidParameterException("поле name должно быть заполнено.");
-        }
-        if (userRepo.existsByEmail(user.getEmail())) {
-            throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется другим пользователем");
-        }
-    }
-
-    public void userValidate(User user) throws InvalidParameterException, DuplicateEmailException {
+    public void newUserValidate(User user) throws InvalidParameterException {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new InvalidParameterException("поле email должно быть заполнено.");
         }
