@@ -34,13 +34,10 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private UserValidator userValidator;
-
     @InjectMocks
     private UserServiceImpl userService;
-
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
 
@@ -137,7 +134,7 @@ class UserServiceImplTest {
 
     @SneakyThrows
     @Test
-    void deleteUser( )  {
+    void deleteUser()  {
         User user = new User(1L, "user1", "user1@email.com");
         UserDto expectUserDto = UserMapper.toUserDto(user);
 
