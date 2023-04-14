@@ -1,6 +1,8 @@
 package ru.practicum.shareit.request.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
@@ -15,6 +17,8 @@ import java.util.Date;
 @Table(name = "requests", schema = "public")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemRequest {
     @Id
     @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)

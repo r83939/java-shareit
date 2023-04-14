@@ -7,9 +7,6 @@ import ru.practicum.shareit.user.model.User;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserMapperTest {
-    //private final UserMapper userMapper;
-
-
     @Test
     void toUserDto() {
         UserDto expextedUserDto = new UserDto(1L, "user1@mail.ru", "user1");

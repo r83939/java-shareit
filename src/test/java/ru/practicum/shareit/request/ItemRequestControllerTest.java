@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.request.dto.*;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
@@ -32,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -61,6 +60,7 @@ class ItemRequestControllerTest {
     private ItemRequestServiceImpl itemRequestServiceImpl;
     @Captor
     private ArgumentCaptor<ItemRequest> itemRequestArgumentCaptor;
+
 
     ItemRequestControllerTest() {
     }
@@ -143,14 +143,77 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void getRequests() {
+    @SneakyThrows
+    void getAllRequestsCheckStatusIsOkTest() {
+        Long userId = 1L;
+        User user = new User(userId, "user1", "user1@mail.ru");
+        ItemRequest itemRequest = new ItemRequest();
+        itemRequest.setId(1L);
+        itemRequest.setDescription("Новый запрос");
+        itemRequest.setRequester(user);
+        itemRequest.setCreated(LocalDateTime.now());
+        OwnItemRequestResponceDto ownItemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(itemRequest, new ArrayList<ItemDto>());
+
+        when(itemRequestServiceImpl.getItemRequests(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(List.of(ownItemRequestResponceDto));
+        mockMvc.perform(get("/requests/all")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 2))
+                .andExpect(status().isOk());
     }
 
     @Test
+    @SneakyThrows
     void updateItemRequestRequest() {
+        Long userId = 1L;
+        User user = new User(userId, "user1", "user1@mail.ru");
+        ItemRequest itemRequest = new ItemRequest();
+        itemRequest.setId(1L);
+        itemRequest.setDescription("Старый запрос");
+        itemRequest.setRequester(user);
+        itemRequest.setCreated(LocalDateTime.now());
+
+        ItemRequestResponceDto newItemRequestResponcetDto =  ItemRequestResponceDto.builder().build();
+        newItemRequestResponcetDto.setId(1L);
+        newItemRequestResponcetDto.setDescription("Новый запрос");
+
+        when(itemRequestServiceImpl.updateItemRequest(anyLong(), Mockito.any(ItemRequestRequestDto.class)))
+                .thenReturn(newItemRequestResponcetDto);
+
+        mockMvc.perform(patch("/requests/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(newItemRequestResponcetDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description", is("Новый запрос")));
+
     }
 
+
+
     @Test
+    @SneakyThrows
     void deleteItemRequestRequest() {
+        ItemRequestResponceDto newItemRequestResponcetDto =  ItemRequestResponceDto.builder().build();
+        newItemRequestResponcetDto.setId(1L);
+        newItemRequestResponcetDto.setDescription("Новый запрос");
+
+        when(itemRequestServiceImpl.deleteItemRequest(anyLong(), anyLong()))
+                .thenReturn(newItemRequestResponcetDto);
+
+        mockMvc.perform(delete("/requests/{id}", 1)
+                        .content(objectMapper.writeValueAsString(newItemRequestResponcetDto))
+                        .header("X-Sharer-User-Id", 1L)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        Mockito
+                .verify(itemRequestServiceImpl, Mockito.times(1))
+                .deleteItemRequest(1L, 1L);
     }
 }

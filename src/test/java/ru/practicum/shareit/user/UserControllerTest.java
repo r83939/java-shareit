@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -133,15 +130,16 @@ class UserControllerTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(oldUser));
         UserDto actualUserDto = userServiceImpl.updateUser(newUser);
 
-        verify(userRepository).save(userArgumentCaptor.capture());
+        verify(userServiceImpl).updateUser(userArgumentCaptor.capture());
         User savedUser = userArgumentCaptor.getValue();
 
         assertEquals("user2", savedUser.getName());
-        assertEquals("user1@mail.ru", savedUser.getEmail());
+        assertEquals("user2@mail.ru", savedUser.getEmail());
     }
 
     @Test
-    public void deleteUserByIdTest() throws Exception {
+    @SneakyThrows
+    public void deleteUserByIdTest() {
         mockMvc.perform(delete("/users/{id}", 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)

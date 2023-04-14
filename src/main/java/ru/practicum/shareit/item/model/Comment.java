@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.minidev.json.annotate.JsonIgnore;
 import ru.practicum.shareit.user.model.User;
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @Table(name = "comments", schema = "public")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Comment {
 
     @Id
