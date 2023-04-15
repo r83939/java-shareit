@@ -70,7 +70,7 @@ public class BookingServiceImpl {
             throw new EntityNotFoundException("Нет позиции с id: " + bookingRequestDto.getItemId());
         }
         if (item.get().getOwner().getId() == user.get().getId()) {
-            throw new EntityNotFoundException("Пользователь не может бронировать собвственную вещь");
+            throw new EntityNotFoundException("Пользователь не может бронировать собственную вещь");
         }
         if (!item.get().getAvailable()) {
             throw new InvalidParameterException("Позиция с id: " + item.get().getId() + " недоступна для бронирования.");
@@ -88,10 +88,6 @@ public class BookingServiceImpl {
         booking.setStart(bookingRequestDto.getStart());
         booking.setEnd(bookingRequestDto.getEnd());
         return BookingMapper.toBookingResponceDto(bookingRepo.save(booking));
-    }
-
-    public BookingResponceDto updateBooking(Long userId, BookingRequestDto booking) {
-        return null;
     }
 
     public BookingResponceDto approveBooking(Long userId, long bookingId, String approved) throws EntityNotFoundException, InvalidParameterException {
@@ -112,12 +108,10 @@ public class BookingServiceImpl {
         }
         if (approved.equals("true")) {
             booking.get().setStatus(Status.APPROVED);
-            //return BookingMapper.toApproveBookingResponceDto(bookingRepo.save(booking.get()));
             return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
         }
         if (approved.equals("false")) {
             booking.get().setStatus(Status.REJECTED);
-            //return BookingMapper.toApproveBookingResponceDto(bookingRepo.save(booking.get()));
             return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
         }
         throw new InvalidParameterException("Указан неверный параметр: approved");
@@ -139,11 +133,6 @@ public class BookingServiceImpl {
                     return bookingRepo.findBookingsWithPagination(userId, from, size).stream()
                         .map(b -> bookingMapper.toBookingResponceDto(b))
                         .collect(Collectors.toList());
-//                    Page<Booking> page = bookingRepo.findBookingsByBookerId(userId,
-//                            PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "start")));
-//                    return page.stream()
-//                            .map(p -> bookingMapper.toBookingResponceDto(p))
-//                            .collect(Collectors.toList());
                 case CURRENT:
                     return bookingRepo.findBookingsByBookerIdOrderByStartDesc(userId).stream()
                             .filter(b -> b.getStart().isBefore(LocalDateTime.now()) && b.getEnd().isAfter(LocalDateTime.now()))
@@ -171,57 +160,6 @@ public class BookingServiceImpl {
                             .collect(Collectors.toList());
                 default: throw new InvalidParameterException("Неверный параметр state: " + state);
             }
-    }
-
-    public List<BookingResponceDto> getBookingsByUserIdAndState1(Long userId, String state, Integer from, Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
-        if (userRepo.findById(userId).isEmpty()) {
-            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
-        }
-        if (!Stream.of(State.values()).anyMatch(v -> v.name().equals(state))) {
-            throw new InvalidStateBookingException("Unknown state: UNSUPPORTED_STATUS");
-        }
-
-        if (from < 0 || size <= 0) {
-                throw new InvalidParameterException("Не верно заданы значения пагинации");
-            }
-        switch (State.valueOf(state)) {
-                case ALL:
-                    return bookingRepo.findBookingsWithPagination(userId, from, size).stream()
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-//                    Page<Booking> page = bookingRepo.findBookingsByBookerId(userId,
-//                            PageRequest.of(from, size, Sort.by(Sort.Direction.DESC, "start")));
-//                    return page.stream()
-//                            .map(p -> bookingMapper.toBookingResponceDto(p))
-//                            .collect(Collectors.toList());
-                case CURRENT:
-                    return bookingRepo.findBookingsByBookerIdOrderByStartDesc(userId).stream()
-                            .filter(b -> b.getStart().isBefore(LocalDateTime.now()) && b.getEnd().isAfter(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case PAST:
-                    return bookingRepo.findBookingsByBookerIdOrderByStartDesc(userId).stream()
-                            .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case FUTURE:
-                    return bookingRepo.findBookingsByBookerIdOrderByStartDesc(userId).stream()
-                            .filter(b -> b.getStart().isAfter(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case WAITING:
-                    return bookingRepo.findBookingsByBookerIdOrderByStartDesc(userId).stream()
-                            .filter(b -> b.getStatus().equals(Status.WAITING))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case REJECTED:
-                    return bookingRepo.findBookingsByBookerIdOrderByStartDesc(userId).stream()
-                            .filter(b -> b.getStatus().equals(Status.REJECTED))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                default: throw new InvalidParameterException("Неверный параметр state: " + state);
-            }
-
     }
 
     public List<BookingResponceDto> getOwnBookingsByUserId(Long userId, String state, Integer from, Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
@@ -231,8 +169,6 @@ public class BookingServiceImpl {
         if (!Stream.of(State.values()).anyMatch(v -> v.name().equals(state))) {
             throw new InvalidStateBookingException("Unknown state: UNSUPPORTED_STATUS");
         }
-
-
         else {
             if (from < 0 || size <= 0) {
                 throw new InvalidParameterException("Не верно заданы значения пагинации");
@@ -271,87 +207,5 @@ public class BookingServiceImpl {
             }
         }
     }
-
-    public List<BookingResponceDto> getOwnBookingsByUserId1(Long userId, String state, Integer from, Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
-        if (userRepo.findById(userId).isEmpty()) {
-            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
-        }
-        if (!Stream.of(State.values()).anyMatch(v -> v.name().equals(state))) {
-            throw new InvalidStateBookingException("Unknown state: UNSUPPORTED_STATUS");
-        }
-
-        if (from == null || size == null) {
-            switch (State.valueOf(state)) {
-                case ALL:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case CURRENT:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getStart().isBefore(LocalDateTime.now()) && b.getEnd().isAfter(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case PAST:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case FUTURE:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getStart().isAfter(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case WAITING:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getStatus().equals(Status.WAITING))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case REJECTED:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getStatus().equals(Status.REJECTED))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                default: throw new InvalidParameterException("Неверный параметр state: " + state);
-            }
-        }
-        else {
-            if (from < 0 || size <= 0) {
-                throw new InvalidParameterException("Не верно заданы значения пагинации");
-            }
-            switch (State.valueOf(state)) {
-                case ALL:
-                    return bookingRepo.findBookingByOwnerIdWithPagination(userId,from, size).stream()
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case CURRENT:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getStart().isBefore(LocalDateTime.now()) && b.getEnd().isAfter(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case PAST:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case FUTURE:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getStart().isAfter(LocalDateTime.now()))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case WAITING:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getStatus().equals(Status.WAITING))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                case REJECTED:
-                    return bookingRepo.findBookingByOwnerId(userId).stream()
-                            .filter(b -> b.getStatus().equals(Status.REJECTED))
-                            .map(b -> bookingMapper.toBookingResponceDto(b))
-                            .collect(Collectors.toList());
-                default: throw new InvalidParameterException("Неверный параметр state: " + state);
-            }
-        }
-    }
-
 
 }

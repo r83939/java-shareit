@@ -11,31 +11,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.practicum.shareit.item.ItemController;
-import ru.practicum.shareit.item.dto.ItemRequestDto;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.request.dto.*;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
-import ru.practicum.shareit.user.UserController;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,14 +45,9 @@ class ItemRequestControllerTest {
     private ItemRequestRepository itemRequestRepository;
 
     @MockBean
-    private ItemRequestServiceImpl itemRequestServiceImpl;
+    private ItemRequestServiceImpl itemRequestService;
     @Captor
     private ArgumentCaptor<ItemRequest> itemRequestArgumentCaptor;
-
-
-    ItemRequestControllerTest() {
-    }
-
 
     @Test
     @SneakyThrows
@@ -79,7 +62,7 @@ class ItemRequestControllerTest {
         ItemRequestResponceDto itemRequestResponceDto =  ItemRequestResponceDto.builder().build();
         itemRequestResponceDto.setDescription("Новый запрос");
 
-        when(itemRequestServiceImpl.addItemRequest(anyLong(), Mockito.any(ItemRequestRequestDto.class)))
+        when(itemRequestService.addItemRequest(anyLong(), Mockito.any(ItemRequestRequestDto.class)))
                 .thenReturn(itemRequestResponceDto);
 
         mockMvc.perform(post("/requests")
@@ -104,7 +87,7 @@ class ItemRequestControllerTest {
         itemRequest.setCreated(LocalDateTime.now());
         OwnItemRequestResponceDto ownItemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(itemRequest, new ArrayList<ItemDto>());
 
-        when(itemRequestServiceImpl.getItemRequest(anyLong(), anyLong())).thenReturn(ownItemRequestResponceDto);
+        when(itemRequestService.getItemRequest(anyLong(), anyLong())).thenReturn(ownItemRequestResponceDto);
         mockMvc.perform(get("/requests/{id}", 1L)
                         .content(objectMapper.writeValueAsString(ownItemRequestResponceDto))
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -127,7 +110,7 @@ class ItemRequestControllerTest {
         itemRequest.setCreated(LocalDateTime.now());
         OwnItemRequestResponceDto ownItemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(itemRequest, new ArrayList<ItemDto>());
 
-        when(itemRequestServiceImpl.getOwnItemRequests(Mockito.anyLong()))
+        when(itemRequestService.getOwnItemRequests(Mockito.anyLong()))
                 .thenReturn(List.of(ownItemRequestResponceDto));
         mockMvc.perform(get("/requests")
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -154,7 +137,7 @@ class ItemRequestControllerTest {
         itemRequest.setCreated(LocalDateTime.now());
         OwnItemRequestResponceDto ownItemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(itemRequest, new ArrayList<ItemDto>());
 
-        when(itemRequestServiceImpl.getItemRequests(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt()))
+        when(itemRequestService.getItemRequests(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(List.of(ownItemRequestResponceDto));
         mockMvc.perform(get("/requests/all")
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -179,7 +162,7 @@ class ItemRequestControllerTest {
         newItemRequestResponcetDto.setId(1L);
         newItemRequestResponcetDto.setDescription("Новый запрос");
 
-        when(itemRequestServiceImpl.updateItemRequest(anyLong(), Mockito.any(ItemRequestRequestDto.class)))
+        when(itemRequestService.updateItemRequest(anyLong(), Mockito.any(ItemRequestRequestDto.class)))
                 .thenReturn(newItemRequestResponcetDto);
 
         mockMvc.perform(patch("/requests/{id}", 1L)
@@ -202,7 +185,7 @@ class ItemRequestControllerTest {
         newItemRequestResponcetDto.setId(1L);
         newItemRequestResponcetDto.setDescription("Новый запрос");
 
-        when(itemRequestServiceImpl.deleteItemRequest(anyLong(), anyLong()))
+        when(itemRequestService.deleteItemRequest(anyLong(), anyLong()))
                 .thenReturn(newItemRequestResponcetDto);
 
         mockMvc.perform(delete("/requests/{id}", 1)
@@ -213,7 +196,7 @@ class ItemRequestControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         Mockito
-                .verify(itemRequestServiceImpl, Mockito.times(1))
+                .verify(itemRequestService, Mockito.times(1))
                 .deleteItemRequest(1L, 1L);
     }
 }

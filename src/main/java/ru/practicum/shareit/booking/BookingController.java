@@ -56,14 +56,6 @@ public class BookingController {
         return bookingServiceImpl.getBookingsByUserIdAndState(userId, state, from, size);
     }
 
-    @GetMapping("/")
-    public List<BookingResponceDto> getBookings1(@RequestHeader(value = USERID, required = true) Long userId,
-                                                @RequestParam(value = "state", required = false, defaultValue = "ALL") String state,
-                                                @RequestParam(value = "from", required = false) Integer from,
-                                                @RequestParam(value = "size", required = false) Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
-        return bookingServiceImpl.getBookingsByUserIdAndState(userId, state, from, size);
-    }
-
     @GetMapping("/owner")
     public List<BookingResponceDto> getOwnBookingsByUserId(@RequestHeader(value = USERID) Long userId,
                                                            @RequestParam(value = "state", defaultValue = DEFAULT_STATE) String state,
@@ -72,11 +64,5 @@ public class BookingController {
         return bookingServiceImpl.getOwnBookingsByUserId(userId, state, from, size);
     }
 
-    @GetMapping("/owner/1")
-    public List<BookingResponceDto> getOwnBookingsByUserId1(@RequestHeader(value = USERID, required = true) Long userId,
-                                                           @RequestParam(value = "state", required = false, defaultValue = "ALL") String state,
-                                                           @RequestParam(value = "from", required = false) Integer from,
-                                                           @RequestParam(value = "size", required = false) Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
-        return bookingServiceImpl.getOwnBookingsByUserId(userId, state, from, size);
-    }
+
 }
