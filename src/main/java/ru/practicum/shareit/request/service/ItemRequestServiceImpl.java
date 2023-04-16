@@ -58,7 +58,7 @@ public class ItemRequestServiceImpl {
                     .collect(Collectors.toList());
             return itemRequestResponceDtos;
         }
-        if ( from >= 0 && size > 0) {
+        if (from >= 0 && size > 0) {
             List<OwnItemRequestResponceDto> itemRequestResponceDtos =  itemRequestRepo.getAllNotOwnRequestsWithPagination(userId, from, size).stream()
                     .map(i -> itemRequestMapper.toOwnItemRequestResponceDto(i, getItemDtos(i.getId())))
                     .collect(Collectors.toList());

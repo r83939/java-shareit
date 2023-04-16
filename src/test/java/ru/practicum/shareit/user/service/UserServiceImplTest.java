@@ -70,7 +70,7 @@ class UserServiceImplTest {
         User user2 = new User(2,"User2", "user2@mail.ru");
         List<User> users = new ArrayList<>(Arrays.asList(user1, user2));
         List<UserDto> expectUsers = users.stream().map(u -> UserMapper.toUserDto(u)).collect(Collectors.toList());
-        when(userRepository.findAll()).thenReturn(users) ;
+        when(userRepository.findAll()).thenReturn(users);
 
         List<UserDto> actualUsers = userService.getAllUsers();
 

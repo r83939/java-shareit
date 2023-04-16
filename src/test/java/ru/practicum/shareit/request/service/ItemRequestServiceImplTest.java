@@ -77,9 +77,9 @@ class ItemRequestServiceImplTest {
         Item item1 = new Item(1L, "Перфоратор", "Классный Инструмент", true, user1, expectedItemRequest1);
         List<ItemDto> itemDtos = List.of(new ItemDto(1L,"Перфоратор", "Классный Инструмент", true, 1L));
         OwnItemRequestResponceDto itemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(expectedItemRequest1, itemDtos);
-        List<OwnItemRequestResponceDto> OwnItemRequestResponceDtos = List.of(itemRequestResponceDto);
+        List<OwnItemRequestResponceDto> ownItemRequestResponceDtos = List.of(itemRequestResponceDto);
 
-        when(mockItemRequestService.getItemRequests(1L, 0, 10)).thenReturn(OwnItemRequestResponceDtos);
+        when(mockItemRequestService.getItemRequests(1L, 0, 10)).thenReturn(ownItemRequestResponceDtos);
 
         List<OwnItemRequestResponceDto> result = mockItemRequestService.getItemRequests(1L, 0, 10);
 
@@ -97,9 +97,9 @@ class ItemRequestServiceImplTest {
         Item item1 = new Item(1L, "Перфоратор", "Классный Инструмент", true, user1, expectedItemRequest1);
         List<ItemDto> itemDtos = List.of(new ItemDto(1L,"Перфоратор", "Классный Инструмент", true, 1L));
         OwnItemRequestResponceDto itemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(expectedItemRequest1, itemDtos);
-        List<OwnItemRequestResponceDto> OwnItemRequestResponceDtos = List.of(itemRequestResponceDto);
+        List<OwnItemRequestResponceDto> ownItemRequestResponceDtos = List.of(itemRequestResponceDto);
 
-        when(mockItemRequestService.getOwnItemRequests(1L)).thenReturn(OwnItemRequestResponceDtos);
+        when(mockItemRequestService.getOwnItemRequests(1L)).thenReturn(ownItemRequestResponceDtos);
 
         List<OwnItemRequestResponceDto> result = mockItemRequestService.getOwnItemRequests(1L);
 
@@ -122,9 +122,9 @@ class ItemRequestServiceImplTest {
 
         OwnItemRequestResponceDto actualRequestDto = itemRequestService.getItemRequest(userId, requestId);
 
-        assertEquals(expectedItemRequest.getId() , actualRequestDto.getId() );
-        assertEquals(expectedItemRequest.getDescription() , actualRequestDto.getDescription());
-        assertEquals(expectedItemRequest.getCreated() , actualRequestDto.getCreated() );
-        assertEquals(expectedItemRequest.getRequester().getId() , actualRequestDto.getRequester().getId() );
+        assertEquals(expectedItemRequest.getId(), actualRequestDto.getId());
+        assertEquals(expectedItemRequest.getDescription(), actualRequestDto.getDescription());
+        assertEquals(expectedItemRequest.getCreated(), actualRequestDto.getCreated());
+        assertEquals(expectedItemRequest.getRequester().getId(), actualRequestDto.getRequester().getId());
     }
 }

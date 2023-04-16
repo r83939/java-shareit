@@ -76,6 +76,7 @@ class CommentRepositoryTest {
         jdbcTemplate.execute("ALTER SEQUENCE SEQ_REQUESTS RESTART");
         jdbcTemplate.execute("ALTER SEQUENCE SEQ_USERS RESTART");
     }
+
     @Test
     void findAllByItemId() {
         List<Comment> comments = commentRepository.findAllByItemId(2L);

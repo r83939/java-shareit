@@ -24,8 +24,7 @@ class ItemRequestMapperTest {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         itemRequest.setCreated(created);
 
-        ItemRequestResponceDto actualItemRequestResponceDto = ItemRequestMapper.
-                toItemRequestResponceDto(itemRequest);
+        ItemRequestResponceDto actualItemRequestResponceDto = ItemRequestMapper.toItemRequestResponceDto(itemRequest);
 
         assertEquals(itemRequest.getDescription(),actualItemRequestResponceDto.getDescription());
         assertEquals(itemRequest.getRequester().getId(),actualItemRequestResponceDto.getRequester().getId());
@@ -37,8 +36,7 @@ class ItemRequestMapperTest {
         LocalDateTime created = LocalDateTime.parse("2023-04-01 10:00",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         ItemRequest itemRequest = new ItemRequest(1L,"Запрос вещи", new User(), created);
-        OwnItemRequestResponceDto ownItemRequestResponceDto = ItemRequestMapper.
-                toOwnItemRequestResponceDto(itemRequest, new ArrayList<ItemDto>());
+        OwnItemRequestResponceDto ownItemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(itemRequest, new ArrayList<ItemDto>());
         assertEquals(itemRequest.getId(), ownItemRequestResponceDto.getId());
         assertEquals(itemRequest.getDescription(), ownItemRequestResponceDto.getDescription());
         assertEquals(itemRequest.getCreated(), ownItemRequestResponceDto.getCreated());

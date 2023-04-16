@@ -92,9 +92,9 @@ class BookingControllerTest {
                 bookerUser,
                 Status.WAITING);
         BookingResponceDto bookingResponceDto = BookingMapper.toBookingResponceDto(booking1);
-        BookingRequestDto bookingRequestDto = new BookingRequestDto(booking1.getStart(),booking1.getEnd(), booking1.getItem().getId(), booking1.getBooker().getId() );
+        BookingRequestDto bookingRequestDto = new BookingRequestDto(booking1.getStart(),booking1.getEnd(), booking1.getItem().getId(), booking1.getBooker().getId());
 
-        when(bookingService.addBooking(anyLong(), Mockito.any(BookingRequestDto.class))).thenReturn((bookingResponceDto));
+        when(bookingService.addBooking(anyLong(), Mockito.any(BookingRequestDto.class))).thenReturn(bookingResponceDto);
 
         mockMvc.perform(post("/bookings")
                         .content(objectMapper.writeValueAsString(bookingRequestDto))
@@ -127,9 +127,9 @@ class BookingControllerTest {
                 bookerUser,
                 Status.APPROVED);
         BookingResponceDto bookingResponceDto = BookingMapper.toBookingResponceDto(booking1);
-        BookingRequestDto bookingRequestDto = new BookingRequestDto(booking1.getStart(),booking1.getEnd(), booking1.getItem().getId(), booking1.getBooker().getId() );
+        BookingRequestDto bookingRequestDto = new BookingRequestDto(booking1.getStart(),booking1.getEnd(), booking1.getItem().getId(), booking1.getBooker().getId());
 
-        when(bookingService.approveBooking(anyLong(), anyLong(), Mockito.any(String.class))).thenReturn((bookingResponceDto));
+        when(bookingService.approveBooking(anyLong(), anyLong(), Mockito.any(String.class))).thenReturn(bookingResponceDto);
 
         mockMvc.perform(patch("/bookings/{bookingId}", 1L)
                         .content(objectMapper.writeValueAsString(bookingRequestDto))
@@ -166,7 +166,7 @@ class BookingControllerTest {
 
         when(bookingService.getBookingsByUserIdAndState(anyLong(), Mockito.any(String.class),  anyInt(), anyInt())).thenReturn(bookingResponceDtos);
 
-        mockMvc.perform(get("/bookings" )
+        mockMvc.perform(get("/bookings")
                         .param("state", "ALL")
                         .param("from", "0")
                         .param("size", "10")
@@ -193,12 +193,12 @@ class BookingControllerTest {
                 bookerUser,
                 Status.APPROVED);
         BookingResponceDto bookingResponceDto = BookingMapper.toBookingResponceDto(booking1);
-        BookingRequestDto bookingRequestDto = new BookingRequestDto(booking1.getStart(),booking1.getEnd(), booking1.getItem().getId(), booking1.getBooker().getId() );
+        BookingRequestDto bookingRequestDto = new BookingRequestDto(booking1.getStart(),booking1.getEnd(), booking1.getItem().getId(), booking1.getBooker().getId());
         List<BookingResponceDto> bookingResponceDtos =  List.of(bookingResponceDto);
 
         when(bookingService.getOwnBookingsByUserId(anyLong(), Mockito.any(String.class),  anyInt(), anyInt())).thenReturn(bookingResponceDtos);
 
-        mockMvc.perform(get("/bookings/owner" )
+        mockMvc.perform(get("/bookings/owner")
                         .param("state", "ALL")
                         .param("from", "0")
                         .param("size", "10")

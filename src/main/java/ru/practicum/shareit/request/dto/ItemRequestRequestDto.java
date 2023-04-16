@@ -10,5 +10,5 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 public class ItemRequestRequestDto {
     @NotEmpty
-    private String Description;
+    private String description;
 }

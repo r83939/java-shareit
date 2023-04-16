@@ -63,16 +63,16 @@ class ItemRequestRepositoryTest {
     void getAllByRequesterIdOrderByCreatedDesc() {
         List<ItemRequest> itemRequests = itemRequestRepository.getAllByRequesterIdOrderByCreatedDesc(1L);
         assertEquals(2, itemRequests.size());
-        assertEquals(4 , itemRequests.get(0).getId());
-        assertEquals(1 , itemRequests.get(1).getId());
+        assertEquals(4, itemRequests.get(0).getId());
+        assertEquals(1, itemRequests.get(1).getId());
     }
 
     @Test
     void getAllNotOwnRequests() {
         List<ItemRequest> itemRequests = itemRequestRepository.getAllNotOwnRequests(1L);
         assertEquals(2, itemRequests.size());
-        assertEquals(3 , itemRequests.get(0).getId());
-        assertEquals(2 , itemRequests.get(1).getId());
+        assertEquals(3, itemRequests.get(0).getId());
+        assertEquals(2, itemRequests.get(1).getId());
     }
 
     @Test

@@ -83,7 +83,7 @@ class ItemRepositoryTest {
 
     @Test
     void search() {
-        List<Item> items = itemRepository.search("Инструмент", true );
+        List<Item> items = itemRepository.search("Инструмент", true);
         assertEquals(3, items.size());
     }
 
