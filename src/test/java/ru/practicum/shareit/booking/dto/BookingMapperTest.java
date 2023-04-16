@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookingMapperTest {
 
-
     @Test
     void toBookingResponceDto() {
         User user1 = new User(1L, "user1", "user1@mail.ru");

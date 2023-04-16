@@ -25,12 +25,10 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -145,34 +143,5 @@ class ItemRequestControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", 2))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @SneakyThrows
-    void updateItemRequestRequest() {
-        Long userId = 1L;
-        User user = new User(userId, "user1", "user1@mail.ru");
-        ItemRequest itemRequest = new ItemRequest();
-        itemRequest.setId(1L);
-        itemRequest.setDescription("Старый запрос");
-        itemRequest.setRequester(user);
-        itemRequest.setCreated(LocalDateTime.now());
-
-        ItemRequestResponceDto newItemRequestResponcetDto =  ItemRequestResponceDto.builder().build();
-        newItemRequestResponcetDto.setId(1L);
-        newItemRequestResponcetDto.setDescription("Новый запрос");
-
-        when(itemRequestService.updateItemRequest(anyLong(), Mockito.any(ItemRequestRequestDto.class)))
-                .thenReturn(newItemRequestResponcetDto);
-
-        mockMvc.perform(patch("/requests/{id}", 1L)
-                        .content(objectMapper.writeValueAsString(newItemRequestResponcetDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description", is("Новый запрос")));
-
     }
 }

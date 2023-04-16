@@ -6,8 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.request.model.ItemRequest;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.Collection;
+
 import java.util.List;
 
 @Repository
@@ -23,5 +22,4 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
      List<ItemRequest> getAllNotOwnRequestsWithPagination(@Param("requester_id") long userId,
                                                           @Param("from") int from,
                                                           @Param("size") int size);
-
 }

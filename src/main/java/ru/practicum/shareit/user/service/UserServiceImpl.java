@@ -46,12 +46,6 @@ public class UserServiceImpl {
 
     public UserDto addUser(User user) throws InvalidParameterException {
         userValidator.newUserValidate(user);
-//        if (user.getEmail() == null || user.getEmail().isBlank()) {
-//            throw new InvalidParameterException("поле email должно быть заполнено.");
-//        }
-//        if (user.getName() == null || user.getName().isBlank()) {
-//            throw new InvalidParameterException("поле name должно быть заполнено.");
-//        }
         return userMapper.toUserDto(userRepo.save(user));
     }
 
@@ -69,7 +63,6 @@ public class UserServiceImpl {
         if (!updateUser.get().getEmail().equals(user.getEmail()) && (userRepo.existsByEmail(user.getEmail()))) {
             throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется другим пользователем");
         }
-
         return userMapper.toUserDto(userRepo.save(user));
     }
 

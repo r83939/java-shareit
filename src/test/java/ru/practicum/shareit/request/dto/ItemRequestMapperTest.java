@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request.dto;
 
 import org.junit.jupiter.api.Test;
-import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -9,13 +8,10 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ItemRequestMapperTest {
-
     @Test
     void toItemRequestResponceDto() {
         Long userId = 1L;

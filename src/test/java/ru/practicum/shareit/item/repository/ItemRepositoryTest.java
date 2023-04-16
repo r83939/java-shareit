@@ -60,8 +60,6 @@ class ItemRepositoryTest {
         itemRepository.save(item2);
         itemRepository.save(item3);
         itemRepository.save(item4);
-
-
     }
 
     @AfterEach

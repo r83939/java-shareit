@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -36,10 +35,8 @@ class BookingRepositoryTest {
     private ItemRequestRepository itemRequestRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private BookingRepository bookingRepository;
-
     @Autowired
     private ItemRepository itemRepository;
 

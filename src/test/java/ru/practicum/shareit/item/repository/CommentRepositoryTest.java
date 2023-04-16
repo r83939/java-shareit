@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -32,7 +31,6 @@ class CommentRepositoryTest {
     private ItemRequestRepository itemRequestRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ItemRepository itemRepository;
 
@@ -84,6 +82,5 @@ class CommentRepositoryTest {
         List<Comment> comments = commentRepository.findAllByItemId(2L);
         assertEquals(1, comments.size());
         assertEquals(2, comments.get(0).getItem().getId());
-
     }
 }

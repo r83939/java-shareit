@@ -8,7 +8,6 @@ import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,7 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-//@WebMvcTest(UserController.class)
+
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc
 class UserControllerTest {
@@ -116,7 +115,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name", is("user1")))
                 .andExpect(jsonPath("$.email", is("user1@mail.ru")));
         verify(userServiceImpl, times(1)).addUser(Mockito.any(User.class));
-
     }
 
     @Test

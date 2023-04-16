@@ -1,8 +1,7 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
@@ -32,6 +31,4 @@ public class UserDto {
     public int hashCode() {
         return Objects.hash(id, name, email);
     }
-
-
 }

@@ -97,9 +97,7 @@ class UserServiceImplTest {
         addUser.setId(1L);
         addUser.setEmail("user1@mail.ru");
         addUser.setName("user1");
-        doThrow(InvalidParameterException.class)
-                .when(userValidator).newUserValidate(addUser);
-
+        doThrow(InvalidParameterException.class).when(userValidator).newUserValidate(addUser);
 
         assertThrows(InvalidParameterException.class,
                 () -> userService.addUser(addUser));

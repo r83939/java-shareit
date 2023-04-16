@@ -20,8 +20,6 @@ import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequestController;
-import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
@@ -32,7 +30,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -47,16 +44,12 @@ class BookingControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private BookingServiceImpl bookingService;
-
     @MockBean
     private BookingRepository bookingRepository;
-
     @Captor
     private ArgumentCaptor<Booking> bookingArgumentCaptor;
-
 
     @Test
     @SneakyThrows
@@ -152,7 +145,6 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.item.id", is(1)))
                 .andExpect(jsonPath("$.booker.id", is(2)))
                 .andExpect(jsonPath("$.status", is("APPROVED")));
-
     }
 
     @Test

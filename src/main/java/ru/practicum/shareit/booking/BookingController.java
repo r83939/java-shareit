@@ -63,6 +63,4 @@ public class BookingController {
                                                            @RequestParam(value = "size", defaultValue = DEFAULT_SIZE) Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
         return bookingServiceImpl.getOwnBookingsByUserId(userId, state, from, size);
     }
-
-
 }
