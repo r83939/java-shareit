@@ -102,7 +102,7 @@ class UserControllerTest {
 
     @Test
     public void addUserCheckJsonTest() throws Exception {
-        User newUser = new User(1, "user1","user1@mail.ru" );
+        User newUser = new User(1, "user1","user1@mail.ru");
         UserDto addedUser = UserMapper.toUserDto(newUser);
         when(userServiceImpl.addUser(Mockito.any(User.class))).thenReturn(addedUser);
         mockMvc.perform(post("/users")

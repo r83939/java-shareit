@@ -164,8 +164,7 @@ public class BookingServiceImpl {
         }
         if (!Stream.of(State.values()).anyMatch(v -> v.name().equals(state))) {
             throw new InvalidStateBookingException("Unknown state: UNSUPPORTED_STATUS");
-        }
-        else {
+        } else {
             if (from < 0 || size <= 0) {
                 throw new InvalidParameterException("Не верно заданы значения пагинации");
             }

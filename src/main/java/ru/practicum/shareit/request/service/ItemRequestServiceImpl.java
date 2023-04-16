@@ -63,8 +63,7 @@ public class ItemRequestServiceImpl {
                     .map(i -> itemRequestMapper.toOwnItemRequestResponceDto(i, getItemDtos(i.getId())))
                     .collect(Collectors.toList());
             return itemRequestResponceDtos;
-        }
-        else {
+        } else {
             throw new InvalidParameterException("Не верно заданы значения пагинации");
         }
     }

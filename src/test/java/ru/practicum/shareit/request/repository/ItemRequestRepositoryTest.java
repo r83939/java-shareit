@@ -77,7 +77,7 @@ class ItemRequestRepositoryTest {
 
     @Test
     void getAllNotOwnRequestsWithPagination() {
-        List<ItemRequest> itemRequests = itemRequestRepository.getAllNotOwnRequestsWithPagination (1L, 1, 2);
+        List<ItemRequest> itemRequests = itemRequestRepository.getAllNotOwnRequestsWithPagination(1L, 1, 2);
         assertEquals(1, itemRequests.size());
     }
 }

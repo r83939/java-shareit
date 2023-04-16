@@ -30,7 +30,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -100,7 +99,7 @@ class BookingServiceImplTest {
 
         BookingResponceDto addedBooking = bookingService.addBooking(bookerUser.getId(), bookingRequestDto);
 
-        assertEquals( 1L, addedBooking.getId());
+        assertEquals(1L, addedBooking.getId());
         assertEquals(bookingRequestDto.getStart(), addedBooking.getStart());
         assertEquals(bookingRequestDto.getEnd(), addedBooking.getEnd());
     }
