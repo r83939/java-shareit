@@ -68,7 +68,7 @@ class BookingRepositoryTest {
         itemRepository.save(item3);
         itemRepository.save(item4);
 
-        Comment comment = new Comment(1L, "Текст Коммментария", user1, item2,
+        Comment comment = new Comment(1L, "Текст Комментария", user1, item2,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         commentRepository.save(comment);
 

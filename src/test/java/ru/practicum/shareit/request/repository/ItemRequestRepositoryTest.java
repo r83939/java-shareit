@@ -47,7 +47,6 @@ class ItemRequestRepositoryTest {
         itemRequestRepository.save(expectedItemRequest2);
         itemRequestRepository.save(expectedItemRequest3);
         itemRequestRepository.save(expectedItemRequest4);
-
     }
 
     @AfterEach

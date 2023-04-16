@@ -41,7 +41,6 @@ class ItemRequestControllerTest {
     private MockMvc mockMvc;
     @Mock
     private ItemRequestRepository itemRequestRepository;
-
     @MockBean
     private ItemRequestServiceImpl itemRequestService;
     @Captor

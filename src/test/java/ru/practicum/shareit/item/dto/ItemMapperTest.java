@@ -16,7 +16,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ItemMapperTest {
-
     @Test
     void toItemResponceDto() {
         User user1 = new User(1L, "user1", "user1@mail.ru");

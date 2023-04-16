@@ -50,7 +50,7 @@ class ItemControllerTest {
         ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
                 user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Item item1 = new Item(1L, "Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Коммментария", user1, item1,
+        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Booking booking1 = new Booking(1L,
                 LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -85,7 +85,7 @@ class ItemControllerTest {
         ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
                 user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Item item1 = new Item(1L, "Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Коммментария", user1, item1,
+        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Booking booking1 = new Booking(1L,
                 LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -118,7 +118,7 @@ class ItemControllerTest {
         ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
                 user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Item item1 = new Item(1L, "Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Коммментария", user1, item1,
+        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Booking booking1 = new Booking(1L,
                 LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -158,7 +158,7 @@ class ItemControllerTest {
         ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
                 user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Item item1 = new Item(1L, "Cупер Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Коммментария", user1, item1,
+        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Booking booking1 = new Booking(1L,
                 LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -193,7 +193,7 @@ class ItemControllerTest {
         ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
                 user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Item item1 = new Item(1L, "Cупер Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Коммментария", user1, item1,
+        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Booking booking1 = new Booking(1L,
                 LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -229,7 +229,7 @@ class ItemControllerTest {
         ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
                 user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Item item1 = new Item(1L, "Cупер Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Коммментария", user1, item1,
+        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         Booking booking1 = new Booking(1L,
                 LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
@@ -254,7 +254,7 @@ class ItemControllerTest {
                         .header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.text", is("Текст Коммментария")))
+                .andExpect(jsonPath("$.text", is("Текст Комментария")))
                 .andExpect(jsonPath("$.authorName", is("user1")))
                 .andExpect(jsonPath("$.created", is("2023-05-07T10:00:00")));
     }
