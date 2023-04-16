@@ -81,6 +81,7 @@ public class ItemRequestServiceImpl {
                 .collect(Collectors.toList());
         return itemRequestResponceDtos;
     }
+
     private List<ItemDto> getItemDtos(Long requestId) {
         return itemRepo.findAllByRequestId(requestId).stream()
                 .map(i -> itemRequestMapper.toItemDto(i))
@@ -102,14 +103,4 @@ public class ItemRequestServiceImpl {
     public ItemRequestResponceDto updateItemRequest(Long userId, ItemRequestRequestDto itemRequest) {
         return null;
     }
-
-    public ItemRequestResponceDto deleteItemRequest(Long userId, Long id) {
-        return null;
-    }
-
-    public List<ItemRequestResponceDto> getItemRequests(Long userId, Long requestId) {
-        return null;
-    }
-
-
 }

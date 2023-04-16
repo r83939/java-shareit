@@ -35,7 +35,6 @@ public class ItemRequestMapper {
                 item.getDescription(),
                 item.getAvailable(),
                 item.getRequest().getId()
-                //item.getOwner().getId()
         );
     }
 }

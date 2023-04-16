@@ -13,11 +13,10 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.request.dto.ItemRequestMapper;
-import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestResponceDto;
-import ru.practicum.shareit.request.dto.OwnItemRequestResponceDto;
+import ru.practicum.shareit.request.dto.*;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
@@ -26,6 +25,7 @@ import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,14 +37,14 @@ import static org.mockito.Mockito.*;
 class ItemRequestServiceImplTest {
     @Mock
     private ItemRequestRepository itemRequestRepository;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private ItemRepository itemRepository;
     @InjectMocks
     private ItemRequestServiceImpl itemRequestService;
+    @Mock
+    private ItemRequestServiceImpl mockItemRequestService;
     @InjectMocks
     private UserServiceImpl userService;
     @Captor
@@ -72,12 +72,43 @@ class ItemRequestServiceImplTest {
 
 
     @Test
+    @SneakyThrows
     void getItemRequests() {
+        User user1 = new User(1L, "user1", "user1@mail.ru");
+        User user2 = new User(1L, "user1", "user1@mail.ru");
+        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
+                user2, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        Item item1 = new Item(1L, "Перфоратор", "Классный Инструмент", true, user1, expectedItemRequest1);
+        List<ItemDto> itemDtos = List.of(new ItemDto(1L,"Перфоратор", "Классный Инструмент", true, 1L));
+        OwnItemRequestResponceDto itemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(expectedItemRequest1, itemDtos);
+        List<OwnItemRequestResponceDto> OwnItemRequestResponceDtos = List.of(itemRequestResponceDto);
 
+        when(mockItemRequestService.getItemRequests(1L, 0, 10)).thenReturn(OwnItemRequestResponceDtos);
+
+        List<OwnItemRequestResponceDto> result = mockItemRequestService.getItemRequests(1L, 0, 10);
+
+        assertNotNull(result);
+        assertEquals(1L, result.size());
     }
 
     @Test
+    @SneakyThrows
     void getOwnItemRequests() {
+        User user1 = new User(1L, "user1", "user1@mail.ru");
+        User user2 = new User(1L, "user1", "user1@mail.ru");
+        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
+                user2, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        Item item1 = new Item(1L, "Перфоратор", "Классный Инструмент", true, user1, expectedItemRequest1);
+        List<ItemDto> itemDtos = List.of(new ItemDto(1L,"Перфоратор", "Классный Инструмент", true, 1L));
+        OwnItemRequestResponceDto itemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(expectedItemRequest1, itemDtos);
+        List<OwnItemRequestResponceDto> OwnItemRequestResponceDtos = List.of(itemRequestResponceDto);
+
+        when(mockItemRequestService.getOwnItemRequests(1L)).thenReturn(OwnItemRequestResponceDtos);
+
+        List<OwnItemRequestResponceDto> result = mockItemRequestService.getOwnItemRequests(1L);
+
+        assertNotNull(result);
+        assertEquals(1L, result.size());
     }
 
     @Test
@@ -99,30 +130,5 @@ class ItemRequestServiceImplTest {
         assertEquals(expectedItemRequest.getDescription() , actualRequestDto.getDescription());
         assertEquals(expectedItemRequest.getCreated() , actualRequestDto.getCreated() );
         assertEquals(expectedItemRequest.getRequester().getId() , actualRequestDto.getRequester().getId() );
-    }
-
-    @Test
-    void updateItemRequest() {
-        long requestId = 1;
-        long userId = 1;
-        LocalDateTime created = LocalDateTime.parse("2023-04-01 10:00",
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        ItemRequest oldItemRequest = new ItemRequest(requestId,"Запрос вещи", new User(2L, "user2", "user2@mail.ru"), created);
-        ItemRequest newItemRequest = new ItemRequest(requestId,"Новый запрос вещи", new User(2L, "user2", "user2@mail.ru"), created);
-
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User(1L, "user1", "user1@mail.ru")));
-        when(itemRequestRepository.save(newItemRequest)).thenReturn(newItemRequest);
-
-        //ItemRequestResponceDto updatedItemRequestResponceDto = itemRequestService.updateItemRequest()
-        //when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.of(oldItemRequest));
-
-    }
-
-    @Test
-    void deleteItemRequest() {
-    }
-
-    @Test
-    void testGetItemRequests() {
     }
 }

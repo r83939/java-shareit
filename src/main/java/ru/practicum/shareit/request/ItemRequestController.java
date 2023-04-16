@@ -38,7 +38,6 @@ public class ItemRequestController {
         return itemRequestServiceImpl.getItemRequest(userId, requestId);
     }
 
-
     @GetMapping()
     public List<OwnItemRequestResponceDto> getOwnRequests(@RequestHeader(USERID) Long userId) throws EntityNotFoundException {
 
@@ -51,20 +50,5 @@ public class ItemRequestController {
                                                     @RequestParam(value = "size", required = false) Integer size) throws EntityNotFoundException, InvalidParameterException {
 
         return itemRequestServiceImpl.getItemRequests(userId, from, size);
-    }
-
-    @PatchMapping("/{id}")
-    public ItemRequestResponceDto updateItemRequestRequest(@RequestHeader(USERID) Long userId,
-                                                           @PathVariable Long id,
-                                                           @RequestBody @Valid ItemRequestRequestDto itemRequest) {
-
-        return itemRequestServiceImpl.updateItemRequest(userId, itemRequest);
-    }
-
-    @DeleteMapping("/{id}")
-    public ItemRequestResponceDto deleteItemRequestRequest(@RequestHeader(USERID) Long userId,
-                                                          @PathVariable Long id) {
-
-        return itemRequestServiceImpl.deleteItemRequest(userId, id);
     }
 }

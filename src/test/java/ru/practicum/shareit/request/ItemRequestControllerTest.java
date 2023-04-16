@@ -175,28 +175,4 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.description", is("Новый запрос")));
 
     }
-
-
-
-    @Test
-    @SneakyThrows
-    void deleteItemRequestRequest() {
-        ItemRequestResponceDto newItemRequestResponcetDto =  ItemRequestResponceDto.builder().build();
-        newItemRequestResponcetDto.setId(1L);
-        newItemRequestResponcetDto.setDescription("Новый запрос");
-
-        when(itemRequestService.deleteItemRequest(anyLong(), anyLong()))
-                .thenReturn(newItemRequestResponcetDto);
-
-        mockMvc.perform(delete("/requests/{id}", 1)
-                        .content(objectMapper.writeValueAsString(newItemRequestResponcetDto))
-                        .header("X-Sharer-User-Id", 1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        Mockito
-                .verify(itemRequestService, Mockito.times(1))
-                .deleteItemRequest(1L, 1L);
-    }
 }

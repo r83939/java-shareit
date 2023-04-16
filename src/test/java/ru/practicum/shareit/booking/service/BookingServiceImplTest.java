@@ -40,21 +40,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.WARN)
 class BookingServiceImplTest {
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private ItemRepository itemRepository;
     @Mock
     private BookingRepository bookingRepository;
     @InjectMocks
     private BookingServiceImpl bookingService;
-
     @Mock
     private BookingServiceImpl mockBookingService;
-
-
     @Captor
     private ArgumentCaptor<Booking> bookingArgumentCaptor;
 

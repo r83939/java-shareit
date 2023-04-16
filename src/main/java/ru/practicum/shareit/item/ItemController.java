@@ -53,11 +53,6 @@ public class ItemController {
         return itemServiceImpl.updateItem(userId, item);
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteItem(@RequestHeader(USERID) Long userId,
-                             @PathVariable long itemId) {
-        return "Sorry, the method has not been implemented yet!";
-    }
 
     @GetMapping("/search")
     public List<ItemResponceDto> searchItems(@RequestHeader(USERID) Long userId,
