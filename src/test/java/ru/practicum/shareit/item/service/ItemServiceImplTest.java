@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -10,6 +11,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
+import ru.practicum.shareit.booking.dto.BookingResponceDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -46,28 +50,59 @@ class ItemServiceImplTest {
     @Captor
     private ArgumentCaptor<Item> itemArgumentCaptor;
 
-    @Test
-    @SneakyThrows
-    void getItemById() {
-        User user1 = new User(1L, "user1", "user1@mail.ru");
-        User user2 = new User(1L, "user1", "user1@mail.ru");
-        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
-                user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Item item1 = new Item(1L, "Cупер Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
+    User user1;
+    User user2;
+    ItemRequest itemRequest1;
+    Item item1;
+    ItemResponceDto itemResponceDto;
+    List<ItemResponceDto> itemResponceDtos;
+    ItemRequestDto itemRequest;
+    ItemWithBookingResponceDto itemWithBookingResponceDto;
+    List<ItemWithBookingResponceDto> itemWithBookingResponceDtos;
+    Booking booking1;
+    BookingRequestDto bookingRequestDto;
+    BookingResponceDto bookingResponceDto;
+    Comment comment1;
+    CommentRequestDto commentRequestDto;
+    CommentResponceDto commentResponceDto1;
+
+    List<CommentResponceDto> commentResponceDtos;
+
+    @BeforeEach
+    public void init() {
+
+        user1 = new User(1L, "user1", "user1@mail.ru");
+        user2 = new User(2L, "user1", "user1@mail.ru");
+        itemRequest1 = new ItemRequest(1L,"Запрос вещи1",
+                user2, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        item1 = new Item(1L, "Дрель", "Инструмент", true, user1, itemRequest1);
+        comment1 = new Comment(1L, "Текст Комментария", user1, item1,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Booking booking1 = new Booking(1L,
+        booking1 = new Booking(1L,
                 LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 item1,
                 user2,
                 Status.WAITING);
-        CommentRequestDto commentRequestDto = new CommentRequestDto("Текст Комментария");
-        CommentResponceDto commentResponceDto1 = new CommentResponceDto(1L, comment1.getText(), comment1.getUser().getName(), comment1.getCreated());
-        ItemResponceDto itemResponceDto = ItemMapper.toItemResponceDto(item1, List.of(commentResponceDto1));
-        ItemWithBookingResponceDto itemWithBookingResponceDto = new ItemWithBookingResponceDto(1L, "Дрель", "Инструмент", true,
-                user1, SpecialBookingDto.builder().build(), SpecialBookingDto.builder().build(), expectedItemRequest1.getId(), List.of(commentResponceDto1));
-        ItemRequestDto itemRequest = new ItemRequestDto(1L, "Cупер Дрель", "Инструмент", true, new User(), 0);
+        bookingRequestDto = new BookingRequestDto(
+                LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                item1.getId(), user2.getId());
+        bookingResponceDto = BookingMapper.toBookingResponceDto(booking1);
+        commentRequestDto = new CommentRequestDto("Текст Комментария");
+        commentResponceDto1 = new CommentResponceDto(1L, comment1.getText(), comment1.getUser().getName(), comment1.getCreated());
+        commentResponceDtos = List.of(commentResponceDto1);
+        itemResponceDto = ItemMapper.toItemResponceDto(item1, List.of(commentResponceDto1));
+        itemResponceDtos = List.of(itemResponceDto);
+        itemWithBookingResponceDto = new ItemWithBookingResponceDto(1L, "Дрель", "Инструмент", true,
+                user1, SpecialBookingDto.builder().build(), SpecialBookingDto.builder().build(), itemRequest1.getId(), List.of(commentResponceDto1));
+        itemWithBookingResponceDtos = List.of(itemWithBookingResponceDto);
+        itemRequest = new ItemRequestDto(1L, "Cупер Дрель", "Инструмент", true, new User(), 0);
+    }
+
+    @Test
+    @SneakyThrows
+    void getItemById() {
 
         when(mockItemService.getItemById(any(Long.class), any(Long.class))).thenReturn(itemWithBookingResponceDto);
 
@@ -81,27 +116,6 @@ class ItemServiceImplTest {
     @SneakyThrows
     void getAllItemsByUserId() {
 
-        User user1 = new User(1L, "user1", "user1@mail.ru");
-        User user2 = new User(1L, "user1", "user1@mail.ru");
-        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
-                user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Item item1 = new Item(1L, "Cупер Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
-                LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Booking booking1 = new Booking(1L,
-                LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                item1,
-                user2,
-                Status.WAITING);
-        CommentRequestDto commentRequestDto = new CommentRequestDto("Текст Комментария");
-        CommentResponceDto commentResponceDto1 = new CommentResponceDto(1L, comment1.getText(), comment1.getUser().getName(), comment1.getCreated());
-        ItemResponceDto itemResponceDto = ItemMapper.toItemResponceDto(item1, List.of(commentResponceDto1));
-        ItemWithBookingResponceDto itemWithBookingResponceDto = new ItemWithBookingResponceDto(1L, "Дрель", "Инструмент", true,
-                user1, SpecialBookingDto.builder().build(), SpecialBookingDto.builder().build(), expectedItemRequest1.getId(), List.of(commentResponceDto1));
-        ItemRequestDto itemRequest = new ItemRequestDto(1L, "Cупер Дрель", "Инструмент", true, new User(), 0);
-        List<ItemWithBookingResponceDto> itemWithBookingResponceDtos = List.of(itemWithBookingResponceDto);
-
         when(mockItemService.getAllItemsByUserId(any(Long.class))).thenReturn(itemWithBookingResponceDtos);
 
         List<ItemWithBookingResponceDto> result = mockItemService.getAllItemsByUserId(1L);
@@ -113,26 +127,6 @@ class ItemServiceImplTest {
     @Test
     @SneakyThrows
     void addItem() {
-        User user1 = new User(1L, "user1", "user1@mail.ru");
-        User user2 = new User(1L, "user1", "user1@mail.ru");
-        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
-                user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Item item1 = new Item(1L, "Cупер Дрель", "Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
-                LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Booking booking1 = new Booking(1L,
-                LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                item1,
-                user2,
-                Status.WAITING);
-        CommentRequestDto commentRequestDto = new CommentRequestDto("Текст Комментария");
-        CommentResponceDto commentResponceDto1 = new CommentResponceDto(1L, comment1.getText(), comment1.getUser().getName(), comment1.getCreated());
-        ItemResponceDto itemResponceDto = ItemMapper.toItemResponceDto(item1, List.of(commentResponceDto1));
-        ItemWithBookingResponceDto itemWithBookingResponceDto = new ItemWithBookingResponceDto(1L, "Дрель", "Инструмент", true,
-                user1, SpecialBookingDto.builder().build(), SpecialBookingDto.builder().build(), expectedItemRequest1.getId(), List.of(commentResponceDto1));
-        ItemRequestDto itemRequest = new ItemRequestDto(1L, "Cупер Дрель", "Инструмент", true, new User(), 0);
-        List<ItemWithBookingResponceDto> itemWithBookingResponceDtos = List.of(itemWithBookingResponceDto);
 
         when(mockItemService.addItem(1L, itemRequest)).thenReturn(itemResponceDto);
 
@@ -140,33 +134,13 @@ class ItemServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
-        assertEquals("Cупер Дрель", result.getName());
+        assertEquals("Дрель", result.getName());
         assertEquals("Инструмент", result.getDescription());
     }
 
     @Test
     @SneakyThrows
     void updateItem() {
-        User user1 = new User(1L, "user1", "user1@mail.ru");
-        User user2 = new User(1L, "user1", "user1@mail.ru");
-        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
-                user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Item item1 = new Item(1L, "Перфоратор", "Классный Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
-                LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Booking booking1 = new Booking(1L,
-                LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                item1,
-                user2,
-                Status.WAITING);
-        CommentRequestDto commentRequestDto = new CommentRequestDto("Текст Комментария");
-        CommentResponceDto commentResponceDto1 = new CommentResponceDto(1L, comment1.getText(), comment1.getUser().getName(), comment1.getCreated());
-        ItemResponceDto itemResponceDto = ItemMapper.toItemResponceDto(item1, List.of(commentResponceDto1));
-        ItemWithBookingResponceDto itemWithBookingResponceDto = new ItemWithBookingResponceDto(1L, "Дрель", "Инструмент", true,
-                user1, SpecialBookingDto.builder().build(), SpecialBookingDto.builder().build(), expectedItemRequest1.getId(), List.of(commentResponceDto1));
-        ItemRequestDto itemRequest = new ItemRequestDto(1L, "Перфоратор", "Классный Инструмент", true, new User(), 0);
-        List<ItemWithBookingResponceDto> itemWithBookingResponceDtos = List.of(itemWithBookingResponceDto);
 
         when(mockItemService.updateItem(1L, itemRequest)).thenReturn(itemResponceDto);
 
@@ -174,34 +148,13 @@ class ItemServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
-        assertEquals("Перфоратор", result.getName());
-        assertEquals("Классный Инструмент", result.getDescription());
+        assertEquals("Дрель", result.getName());
+        assertEquals("Инструмент", result.getDescription());
     }
 
     @Test
     @SneakyThrows
     void searchItems() {
-        User user1 = new User(1L, "user1", "user1@mail.ru");
-        User user2 = new User(1L, "user1", "user1@mail.ru");
-        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
-                user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Item item1 = new Item(1L, "Перфоратор", "Классный Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Текст Комментария", user1, item1,
-                LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Booking booking1 = new Booking(1L,
-                LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                item1,
-                user2,
-                Status.WAITING);
-        CommentRequestDto commentRequestDto = new CommentRequestDto("Текст Комментария");
-        CommentResponceDto commentResponceDto1 = new CommentResponceDto(1L, comment1.getText(), comment1.getUser().getName(), comment1.getCreated());
-        ItemResponceDto itemResponceDto = ItemMapper.toItemResponceDto(item1, List.of(commentResponceDto1));
-        ItemWithBookingResponceDto itemWithBookingResponceDto = new ItemWithBookingResponceDto(1L, "Дрель", "Инструмент", true,
-                user1, SpecialBookingDto.builder().build(), SpecialBookingDto.builder().build(), expectedItemRequest1.getId(), List.of(commentResponceDto1));
-        ItemRequestDto itemRequest = new ItemRequestDto(1L, "Перфоратор", "Классный Инструмент", true, new User(), 0);
-        List<ItemWithBookingResponceDto> itemWithBookingResponceDtos = List.of(itemWithBookingResponceDto);
-        List<ItemResponceDto> itemResponceDtos = List.of(itemResponceDto);
 
         when(mockItemService.searchItems(1L, "перфор")).thenReturn(itemResponceDtos);
 
@@ -209,29 +162,13 @@ class ItemServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("Перфоратор", result.get(0).getName());
-        assertEquals("Классный Инструмент", result.get(0).getDescription());
+        assertEquals("Дрель", result.get(0).getName());
+        assertEquals("Инструмент", result.get(0).getDescription());
     }
 
     @Test
     @SneakyThrows
     void getCommentResponceDtos() {
-        User user1 = new User(1L, "user1", "user1@mail.ru");
-        User user2 = new User(1L, "user1", "user1@mail.ru");
-        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
-                user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Item item1 = new Item(1L, "Перфоратор", "Классный Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Отличный инструмент", user1, item1,
-                LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Booking booking1 = new Booking(1L,
-                LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                item1,
-                user2,
-                Status.WAITING);
-        CommentRequestDto commentRequestDto = new CommentRequestDto("Отличный инструмент");
-        CommentResponceDto commentResponceDto1 = new CommentResponceDto(1L, comment1.getText(), comment1.getUser().getName(), comment1.getCreated());
-        List<CommentResponceDto> commentResponceDtos = List.of(commentResponceDto1);
 
         when(mockItemService.getCommentResponceDtos(1L)).thenReturn(commentResponceDtos);
 
@@ -244,21 +181,6 @@ class ItemServiceImplTest {
     @Test
     @SneakyThrows
     void addComment() {
-        User user1 = new User(1L, "user1", "user1@mail.ru");
-        User user2 = new User(1L, "user1", "user1@mail.ru");
-        ItemRequest expectedItemRequest1 = new ItemRequest(1L,"Запрос вещи1",
-                user1, LocalDateTime.parse("2023-04-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Item item1 = new Item(1L, "Перфоратор", "Классный Инструмент", true, user1, expectedItemRequest1);
-        Comment comment1 = new Comment(1L, "Отличный инструмент", user1, item1,
-                LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-        Booking booking1 = new Booking(1L,
-                LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                item1,
-                user2,
-                Status.WAITING);
-        CommentRequestDto commentRequestDto = new CommentRequestDto("Отличный инструмент");
-        CommentResponceDto commentResponceDto1 = new CommentResponceDto(1L, comment1.getText(), comment1.getUser().getName(), comment1.getCreated());
 
         when(mockItemService.addComment(1L, 1L, commentRequestDto)).thenReturn(commentResponceDto1);
 
@@ -266,6 +188,6 @@ class ItemServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
-        assertEquals("Отличный инструмент", result.getText());
+        assertEquals("Текст Комментария", result.getText());
     }
 }

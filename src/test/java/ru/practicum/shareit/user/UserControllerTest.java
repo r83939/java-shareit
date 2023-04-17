@@ -120,7 +120,6 @@ class UserControllerTest {
     void updateUser() {
         Long userId = 0L;
         User oldUser = new User(userId, "user1", "user1@mail.ru");
-
         User newUser = new User(userId, "user2", "user2@mail.ru");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(oldUser));
@@ -131,6 +130,22 @@ class UserControllerTest {
 
         assertEquals("user2", savedUser.getName());
         assertEquals("user2@mail.ru", savedUser.getEmail());
+    }
+
+    @Test
+    void updateUserTest() throws  Exception {
+        UserDto user1 = new UserDto(1, "user1@mail.ru", "user1");
+        when(userServiceImpl.updateUser(any())).thenReturn(user1);
+
+        mockMvc.perform(patch("/users/1")
+                        .content(objectMapper.writeValueAsString(user1))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(user1.getId()),Long.class))
+                .andExpect(jsonPath("$.name", is(user1.getName())))
+                .andExpect(jsonPath("$.email", is(user1.getEmail())));
     }
 
     @Test

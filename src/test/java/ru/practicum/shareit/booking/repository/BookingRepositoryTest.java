@@ -41,7 +41,7 @@ class BookingRepositoryTest {
     private ItemRepository itemRepository;
 
     @BeforeEach
-    private void initContent() {
+    private void init() {
         User user1 = new User(1L, "user1", "user1@mail.ru");
         User user2 = new User(2L, "user2", "user2@mail.ru");
         User user3 = new User(3L, "user3", "user3@mail.ru");
