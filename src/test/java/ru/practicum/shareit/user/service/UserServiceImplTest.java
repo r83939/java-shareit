@@ -135,9 +135,59 @@ class UserServiceImplTest {
         assertEquals("user1@mail.ru", savedUser.getEmail());
     }
 
+    @Test
+    void updateUser_whenUserFail() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(user1));
+    }
+
+    @Test
+    void updateUser_whenNoEmail() throws DuplicateEmailException, EntityNotFoundException {
+        User updateUser = new User(1L, "user1", null);
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
+        when(userRepository.save(updateUser)).thenReturn(updateUser);
+;
+        userService.updateUser(updateUser);
+
+        verify(userRepository).save(userArgumentCaptor.capture());
+        UserDto savedUser = UserMapper.toUserDto(userArgumentCaptor.getValue());
+
+        assertEquals("user1", savedUser.getName());
+        assertEquals("user1@mail.ru", savedUser.getEmail());
+    }
+
+    @Test
+    void updateUser_whenNoName() throws DuplicateEmailException, EntityNotFoundException {
+        User updateUser = new User(1L, null, "user1@mail.ru");
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
+        when(userRepository.save(updateUser)).thenReturn(updateUser);
+        ;
+        userService.updateUser(updateUser);
+
+        verify(userRepository).save(userArgumentCaptor.capture());
+        UserDto savedUser = UserMapper.toUserDto(userArgumentCaptor.getValue());
+
+        assertEquals("User1", savedUser.getName());
+        assertEquals("user1@mail.ru", savedUser.getEmail());
+    }
+
+    @Test
+    void updateUser_whenDublicateEmail() {
+
+        User updateUser = new User(1L, "User1", "user4@mail.ru");
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
+        when(userRepository.existsByEmail("user4@mail.ru")).thenReturn(true);
+
+
+        assertThrows(DuplicateEmailException.class, () -> userService.updateUser(updateUser));
+    }
+
+
+
+
     @SneakyThrows
     @Test
-    void deleteUser()  {
+    void deleteUser() {
 
         UserDto expectUserDto = UserMapper.toUserDto(user1);
 
@@ -147,5 +197,21 @@ class UserServiceImplTest {
 
         verify(userRepository, times(1)).deleteById(1L);
         assertEquals(expectUserDto, actualUserDto);
+    }
+
+    @SneakyThrows
+    @Test
+    void deleteUser_whenUserIdFail() {
+
+        assertThrows(InvalidParameterException.class, () -> userService.deleteUser(-1));
+    }
+
+    @SneakyThrows
+    @Test
+    void deleteUser_whenNoUser() {
+
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> userService.deleteUser(1));
     }
 }

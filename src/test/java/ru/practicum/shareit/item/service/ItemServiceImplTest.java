@@ -4,10 +4,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -20,17 +17,21 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,8 +40,14 @@ class ItemServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private CommentRepository commentRepository;
     @Mock
     private ItemRepository itemRepository;
+
+    @Mock
+    private ItemRequestRepository itemRequestRepository;
     @Mock
     private BookingRepository bookingRepository;
     @InjectMocks
@@ -60,12 +67,13 @@ class ItemServiceImplTest {
     ItemWithBookingResponceDto itemWithBookingResponceDto;
     List<ItemWithBookingResponceDto> itemWithBookingResponceDtos;
     Booking booking1;
+    Booking booking2;
     BookingRequestDto bookingRequestDto;
     BookingResponceDto bookingResponceDto;
     Comment comment1;
     CommentRequestDto commentRequestDto;
     CommentResponceDto commentResponceDto1;
-
+    List<Comment> comments;
     List<CommentResponceDto> commentResponceDtos;
 
     @BeforeEach
@@ -78,9 +86,16 @@ class ItemServiceImplTest {
         item1 = new Item(1L, "Дрель", "Инструмент", true, user1, itemRequest1);
         comment1 = new Comment(1L, "Текст Комментария", user1, item1,
                 LocalDateTime.parse("2023-05-07 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        comments = List.of(comment1);
         booking1 = new Booking(1L,
                 LocalDateTime.parse("2023-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 LocalDateTime.parse("2023-06-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                item1,
+                user2,
+                Status.APPROVED);
+        booking2 = new Booking(2L,
+                LocalDateTime.parse("2023-03-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                LocalDateTime.parse("2023-03-03 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 item1,
                 user2,
                 Status.WAITING);
@@ -104,90 +119,100 @@ class ItemServiceImplTest {
     @SneakyThrows
     void getItemById() {
 
-        when(mockItemService.getItemById(any(Long.class), any(Long.class))).thenReturn(itemWithBookingResponceDto);
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
+        when(bookingRepository.getLastBookingByItemId(1L)).thenReturn(booking1);
+        when(bookingRepository.getNextBookingByItemId(1L)).thenReturn(booking1);
+        when(commentRepository.findAllByItemId(anyLong())).thenReturn(List.of(comment1));
 
-        ItemWithBookingResponceDto result = mockItemService.getItemById(1L, 1L);
+        ItemWithBookingResponceDto result = itemService.getItemById(1L, 1L);
 
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
+        Mockito.verify(itemRepository, Mockito.times(1)).findById(1L);
+        Mockito.verify(commentRepository).findAllByItemId(anyLong());
+        Mockito.verify(bookingRepository).getLastBookingByItemId(anyLong());
+        Mockito.verify(bookingRepository).getNextBookingByItemId(anyLong());
     }
 
     @Test
     @SneakyThrows
     void getAllItemsByUserId() {
 
-        when(mockItemService.getAllItemsByUserId(any(Long.class))).thenReturn(itemWithBookingResponceDtos);
+        when(itemRepository.findAllByOwner(1L)).thenReturn(List.of(item1));
+        when(bookingRepository.getLastBookingByItemId(1L)).thenReturn(booking2);
+        when(bookingRepository.getNextBookingByItemId(1L)).thenReturn(booking1);
+        when(commentRepository.findAllByItemId(anyLong())).thenReturn(List.of(comment1));
 
-        List<ItemWithBookingResponceDto> result = mockItemService.getAllItemsByUserId(1L);
+        itemService.getAllItemsByUserId(1L);
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        Mockito.verify(itemRepository, Mockito.times(1)).findAllByOwner(1L);
+        Mockito.verify(commentRepository).findAllByItemId(anyLong());
+        Mockito.verify(bookingRepository).getLastBookingByItemId(anyLong());
+        Mockito.verify(bookingRepository).getNextBookingByItemId(anyLong());
     }
 
     @Test
     @SneakyThrows
     void addItem() {
 
-        when(mockItemService.addItem(1L, itemRequest)).thenReturn(itemResponceDto);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        when(itemRequestRepository.findById(1L)).thenReturn(Optional.of(itemRequest1));
+        when(itemRepository.save(Mockito.any())).thenReturn(item1);
 
-        ItemResponceDto result = mockItemService.addItem(1L, itemRequest);
+        itemService.addItem(1, itemRequest);
 
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Дрель", result.getName());
-        assertEquals("Инструмент", result.getDescription());
+        Mockito.verify(itemRepository).save(Mockito.any());
     }
 
     @Test
     @SneakyThrows
     void updateItem() {
 
-        when(mockItemService.updateItem(1L, itemRequest)).thenReturn(itemResponceDto);
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
+        when(commentRepository.findAllByItemId(anyLong())).thenReturn(List.of(comment1));
+        when(itemRepository.save(Mockito.any())).thenReturn(item1);
 
-        ItemResponceDto result = mockItemService.updateItem(1L, itemRequest);
+        itemService.updateItem(1, itemRequest);
 
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Дрель", result.getName());
-        assertEquals("Инструмент", result.getDescription());
+        Mockito.verify(itemRepository).save(Mockito.any());
     }
 
     @Test
     @SneakyThrows
     void searchItems() {
+        when(userRepository.existsById(1L)).thenReturn(true);
+        when(itemRepository.search(anyString(), anyBoolean())).thenReturn(anyList());
 
-        when(mockItemService.searchItems(1L, "перфор")).thenReturn(itemResponceDtos);
+        itemService.searchItems(1L, "Инструмент");
 
-        List<ItemResponceDto> result = mockItemService.searchItems(1L, "перфор");
+        Mockito.verify(itemRepository, Mockito.times(1)).search(anyString(), anyBoolean());
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("Дрель", result.get(0).getName());
-        assertEquals("Инструмент", result.get(0).getDescription());
+        Mockito.verify(itemRepository).search(anyString(), anyBoolean());
+
+
     }
 
     @Test
     @SneakyThrows
     void getCommentResponceDtos() {
+        when(commentRepository.findAllByItemId(anyLong())).thenReturn(List.of(comment1));
 
-        when(mockItemService.getCommentResponceDtos(1L)).thenReturn(commentResponceDtos);
+        itemService.getCommentResponceDtos(1L);
 
-        List<CommentResponceDto> result = mockItemService.getCommentResponceDtos(1L);
+        Mockito.verify(commentRepository, Mockito.times(1)).findAllByItemId(1L);
+        Mockito.verify(commentRepository).findAllByItemId(1L);
 
-        assertNotNull(result);
-        assertEquals(1L, result.size());
+
     }
 
     @Test
     @SneakyThrows
     void addComment() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item1));
+        when(bookingRepository.existsByBookerAndItem(1L, 1L)).thenReturn(1);
+        when(commentRepository.save(Mockito.any())).thenReturn(comment1);
 
-        when(mockItemService.addComment(1L, 1L, commentRequestDto)).thenReturn(commentResponceDto1);
+        itemService.addComment(1L, 1L, commentRequestDto);
 
-        CommentResponceDto result = mockItemService.addComment(1L, 1L, commentRequestDto);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Текст Комментария", result.getText());
+        Mockito.verify(commentRepository).save(any(Comment.class));
     }
 }

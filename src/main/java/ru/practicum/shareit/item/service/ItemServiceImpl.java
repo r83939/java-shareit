@@ -72,6 +72,7 @@ public class ItemServiceImpl {
         List<CommentResponceDto> comments = commentRepo.findAllByItemId(itemId).stream()
                 .map(c -> commentMapper.toCommentResponceDto(c))
                 .collect(Collectors.toList());
+
         return ItemWithBookingResponceDto.builder()
                 .id(item.get().getId())
                 .name(item.get().getName())
@@ -91,7 +92,7 @@ public class ItemServiceImpl {
             SpecialBookingDto specialLastBooking = SpecialBookingDto.builder().build();
             SpecialBookingDto specialNextBooking = SpecialBookingDto.builder().build();
             var lastBooking = bookingRepo.getLastBookingByItemId(item.getId());
-            var nextBooking = (bookingRepo.getNextBookingByItemId(item.getId()));
+            var nextBooking = bookingRepo.getNextBookingByItemId(item.getId());
             if (lastBooking != null && nextBooking != null) {
                 specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
                 specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
@@ -160,10 +161,6 @@ public class ItemServiceImpl {
                 .collect(Collectors.toList());
 
         return itemMapper.toItemResponceDto(apdatedItem, comments);
-    }
-
-    public ItemRequestDto deleteItem(long itemId) {
-        return null;
     }
 
     public List<ItemResponceDto> searchItems(Long userId, String text) throws EntityNotFoundException {
