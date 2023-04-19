@@ -26,11 +26,9 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -78,7 +76,6 @@ class ItemServiceImplTest {
 
     @BeforeEach
     public void init() {
-
         user1 = new User(1L, "user1", "user1@mail.ru");
         user2 = new User(2L, "user1", "user1@mail.ru");
         itemRequest1 = new ItemRequest(1L,"Запрос вещи1",

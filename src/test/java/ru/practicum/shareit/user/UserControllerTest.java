@@ -90,6 +90,7 @@ class UserControllerTest {
     void createUser() throws Exception {
         User newUser = new User(1, "user1","user1@mail.ru");
         UserDto addedUser = UserMapper.toUserDto(newUser);
+
         when(userServiceImpl.addUser(Mockito.any(User.class))).thenReturn(addedUser);
 
         mockMvc.perform(post("/users")
@@ -104,7 +105,9 @@ class UserControllerTest {
     public void addUserCheckJsonTest() throws Exception {
         User newUser = new User(1, "user1","user1@mail.ru");
         UserDto addedUser = UserMapper.toUserDto(newUser);
+
         when(userServiceImpl.addUser(Mockito.any(User.class))).thenReturn(addedUser);
+
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(newUser))
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -112,6 +115,7 @@ class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is("user1")))
                 .andExpect(jsonPath("$.email", is("user1@mail.ru")));
+
         verify(userServiceImpl, times(1)).addUser(Mockito.any(User.class));
     }
 
@@ -135,6 +139,7 @@ class UserControllerTest {
     @Test
     void updateUserTest() throws  Exception {
         UserDto user1 = new UserDto(1, "user1@mail.ru", "user1");
+
         when(userServiceImpl.updateUser(any())).thenReturn(user1);
 
         mockMvc.perform(patch("/users/1")
@@ -156,8 +161,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        Mockito
-                .verify(userServiceImpl, Mockito.times(1))
+        Mockito.verify(userServiceImpl, Mockito.times(1))
                 .deleteUser(1);
     }
 }

@@ -33,13 +33,11 @@ public class UserController {
 
     @GetMapping()
     public List<UserDto> getAllUsers() {
-
         return userServiceImpl.getAllUsers();
     }
 
     @PostMapping()
     public UserDto createUser(@RequestBody  @Valid User user) throws InvalidParameterException {
-
         return userServiceImpl.addUser(user);
     }
 
@@ -48,7 +46,6 @@ public class UserController {
                                @RequestBody @Valid User user) throws EntityNotFoundException, DuplicateEmailException {
         user.setId(id);
         return  userServiceImpl.updateUser(user);
-
     }
 
     @DeleteMapping("/{id}")

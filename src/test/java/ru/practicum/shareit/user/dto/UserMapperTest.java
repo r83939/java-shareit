@@ -15,6 +15,7 @@ class UserMapperTest {
         user.setEmail("user1@mail.ru");
 
         UserDto actualUser = UserMapper.toUserDto(user);
+
         assertEquals(expextedUserDto.getId(), actualUser.getId());
         assertEquals(expextedUserDto.getName(), actualUser.getName());
         assertEquals(expextedUserDto.getEmail(), actualUser.getEmail());

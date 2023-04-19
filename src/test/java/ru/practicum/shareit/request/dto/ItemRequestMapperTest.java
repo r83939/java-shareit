@@ -37,6 +37,7 @@ class ItemRequestMapperTest {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         ItemRequest itemRequest = new ItemRequest(1L,"Запрос вещи", new User(), created);
         OwnItemRequestResponceDto ownItemRequestResponceDto = ItemRequestMapper.toOwnItemRequestResponceDto(itemRequest, new ArrayList<ItemDto>());
+
         assertEquals(itemRequest.getId(), ownItemRequestResponceDto.getId());
         assertEquals(itemRequest.getDescription(), ownItemRequestResponceDto.getDescription());
         assertEquals(itemRequest.getCreated(), ownItemRequestResponceDto.getCreated());

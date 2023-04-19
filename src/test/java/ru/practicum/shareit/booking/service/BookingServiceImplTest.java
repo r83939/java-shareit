@@ -133,7 +133,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void addBooking() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
         when(userRepository.findById(2L)).thenReturn(Optional.ofNullable(user2));
         when(itemRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(item2));
@@ -152,15 +151,16 @@ class BookingServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
         when(userRepository.findById(2L)).thenReturn(Optional.ofNullable(user2));
         when(itemRepository.findById(3L)).thenReturn(Optional.empty());
+
         assertThrows(EntityNotFoundException.class, () -> bookingService.addBooking(10L, bookingRequestDto));
     }
 
     @Test
     @SneakyThrows
     void addBooking_whenNoItem() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
         when(itemRepository.findById(2L)).thenReturn(Optional.empty()).thenThrow(RuntimeException.class);
+
         assertThrows(EntityNotFoundException.class, () -> bookingService.addBooking(1L, bookingRequestDto));
     }
 
@@ -206,7 +206,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void approveBooking() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
         when(itemRepository.findUserIdById(1L)).thenReturn(user1.getId());
         when(bookingRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(booking1));
@@ -223,7 +222,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void approveBooking_wnenApprovedFalse() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
         when(itemRepository.findUserIdById(1L)).thenReturn(user1.getId());
         when(bookingRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(booking1));
@@ -239,7 +237,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void approveBooking_wnenApprovedError() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
         when(itemRepository.findUserIdById(1L)).thenReturn(user1.getId());
         when(bookingRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(booking1));
@@ -250,7 +247,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void approveBooking_whenUserFail() {
-
         when(userRepository.findById(10L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> bookingService.approveBooking(10L, 1L, "true"));
@@ -259,7 +255,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void approveBooking_whenNoBooking() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
         when(bookingRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -269,7 +264,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void approveBooking_whenStatusApproved() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
         when(itemRepository.findUserIdById(1L)).thenReturn(user1.getId());
         when(bookingRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(booking1));
@@ -296,7 +290,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void getBookingsByUserIdAndState() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
 
         Mockito.when(bookingRepository.findBookingsWithPagination(1L, 0, 2)).thenReturn(bookings);
@@ -323,15 +316,14 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void getBookingsByUserIdAndState_whenUserFail() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
         assertThrows(EntityNotFoundException.class, () -> bookingService.getBookingsByUserIdAndState(1L, "ALL", 0, 10));
     }
 
     @Test
     @SneakyThrows
     void getBookingsByUserIdAndState_whenStateError() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
 
         assertThrows(InvalidStateBookingException.class, () -> bookingService.getBookingsByUserIdAndState(1L, "Error", 0, 10));
@@ -340,7 +332,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void getBookingsByUserIdAndState_whenFromError() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
 
         assertThrows(InvalidParameterException.class, () -> bookingService.getBookingsByUserIdAndState(1L, "ALL", -1, 10));
@@ -349,7 +340,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void getBookingsByUserIdAndState_whenSizeError() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
 
         assertThrows(InvalidParameterException.class, () -> bookingService.getBookingsByUserIdAndState(1L, "ALL", 0, -1));
@@ -358,7 +348,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void getOwnBookingsByUserId() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
 
         Mockito.when(bookingRepository.findBookingByOwnerIdWithPagination(1L, 0, 2)).thenReturn(bookings);;
@@ -389,16 +378,14 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void getOwnBookingsByUserId_whenUserFail() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> bookingService.getOwnBookingsByUserId(1L, "ALL", 0, 10));
 
+        assertThrows(EntityNotFoundException.class, () -> bookingService.getOwnBookingsByUserId(1L, "ALL", 0, 10));
     }
 
     @Test
     @SneakyThrows
     void getOwnBookingsByUserIdAndState_whenStateError() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
 
         assertThrows(InvalidStateBookingException.class, () -> bookingService.getOwnBookingsByUserId(1L, "Error", 0, 10));
@@ -407,7 +394,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void getOwnBookingsByUserIdAndState_whenFromError() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
 
         assertThrows(InvalidParameterException.class, () -> bookingService.getOwnBookingsByUserId(1L, "ALL", -1, 10));
@@ -416,7 +402,6 @@ class BookingServiceImplTest {
     @Test
     @SneakyThrows
     void getOwnBookingsByUserIdAndState_whenSizeError() {
-
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
 
         assertThrows(InvalidParameterException.class, () -> bookingService.getOwnBookingsByUserId(1L, "ALL", 0, -1));

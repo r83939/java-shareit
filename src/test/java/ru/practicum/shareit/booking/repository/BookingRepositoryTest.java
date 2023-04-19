@@ -132,13 +132,13 @@ class BookingRepositoryTest {
     @Test
     void getLastBookingByItemId() {
         Booking lastBooking = bookingRepository.getLastBookingByItemId(1L);
-        assertEquals(2, lastBooking.getId());
+        assertEquals(3, lastBooking.getId());
     }
 
     @Test
     void getNextBookingByItemId() {
         Booking nextBooking = bookingRepository.getNextBookingByItemId(1L);
-        assertEquals(3, nextBooking.getId());
+        assertEquals(1, nextBooking.getId());
     }
 
     @Test

@@ -109,7 +109,6 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.item.id", is(1)))
                 .andExpect(jsonPath("$.booker.id", is(2)))
                 .andExpect(jsonPath("$.status", is("WAITING")));
-
     }
 
     @Test
