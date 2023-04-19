@@ -234,6 +234,7 @@ class BookingServiceImplTest {
         Mockito.verify(bookingRepository).save(any(Booking.class));
 
     }
+
     @Test
     @SneakyThrows
     void approveBooking_wnenApprovedError() {

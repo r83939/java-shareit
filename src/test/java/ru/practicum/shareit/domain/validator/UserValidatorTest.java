@@ -15,6 +15,7 @@ class UserValidatorTest  {
 
     UserValidator userValidator = new UserValidator();
     private ConstraintValidatorContext constraintValidatorContext = mock(ConstraintValidatorContext.class);
+
     @Test
     void newUserValidate_whenEmailEmpty() {
 
