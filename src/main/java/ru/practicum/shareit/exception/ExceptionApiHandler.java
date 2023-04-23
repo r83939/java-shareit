@@ -6,9 +6,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+
 @Slf4j
 @RestControllerAdvice
 public class ExceptionApiHandler {
+
+    @ExceptionHandler(InvalidStateBookingException.class)
+    public ResponseEntity<ErrorMessage> invalidStateBookingException(InvalidStateBookingException exception) {
+        log.error(exception.getMessage(), exception);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
 
     @ExceptionHandler(InvalidParameterException.class)
     public ResponseEntity<ErrorMessage> invalidParameterException(InvalidParameterException exception) {
@@ -50,6 +59,4 @@ public class ExceptionApiHandler {
                 .status(HttpStatus.FORBIDDEN)
                 .body(new ErrorMessage(exception.getMessage()));
     }
-
-
 }

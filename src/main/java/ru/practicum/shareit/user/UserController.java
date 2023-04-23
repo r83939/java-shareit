@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.DuplicateEmailException;
@@ -25,20 +26,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable long id) {
+    public UserDto getUser(@PathVariable long id) throws EntityNotFoundException {
 
         return userServiceImpl.getUserById(id);
     }
 
     @GetMapping()
     public List<UserDto> getAllUsers() {
-
         return userServiceImpl.getAllUsers();
     }
 
     @PostMapping()
-    public UserDto createUser(@RequestBody  @Valid User user) throws DuplicateEmailException, InvalidParameterException {
-
+    public UserDto createUser(@RequestBody  @Valid User user) throws InvalidParameterException {
         return userServiceImpl.addUser(user);
     }
 
@@ -47,12 +46,10 @@ public class UserController {
                                @RequestBody @Valid User user) throws EntityNotFoundException, DuplicateEmailException {
         user.setId(id);
         return  userServiceImpl.updateUser(user);
-
     }
 
     @DeleteMapping("/{id}")
     public UserDto deleteUser(@PathVariable Long id) throws InvalidParameterException, EntityNotFoundException {
-
         return userServiceImpl.deleteUser(id);
     }
 }

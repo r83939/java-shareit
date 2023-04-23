@@ -1,27 +1,29 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.practicum.shareit.domain.validator.BookingDateEmpty;
 
-import java.util.Date;
+import javax.validation.constraints.Future;
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookingRequestDto {
+    @Future
+    @BookingDateEmpty(message = "Не указана дата начала бронирования")
+    private LocalDateTime start;
 
-    private Date start;           // дата и время начала бронирования
+    @Future
+    @BookingDateEmpty(message = "Не указана дата окончания бронирования")
+    private LocalDateTime end;
 
-    private Date end;             // дата и время конца бронирования
+    private long itemId;
 
-    private long itemId;            // вещь, которую пользователь бронирует
-
-    private long booker;          // пользователь, который осуществляет бронирование
-
-
-    public BookingRequestDto(Date start, Date end, long itemId, long booker) {
-        this.start = start;
-        this.end = end;
-        this.itemId = itemId;
-        this.booker = booker;
-    }
+    private long booker;
 }

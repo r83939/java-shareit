@@ -1,36 +1,36 @@
 package ru.practicum.shareit.booking.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.util.Date;
-
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookings", schema = "public")
-@Getter @Setter
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;              // уникальный идентификатор бронирования
-
-    @Column(name="start_date")
-    private Date start;           // дата и время начала бронирования
-
-    @Column(name="end_date")
-    private Date end;             // дата и время конца бронирования
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @GeneratedValue(generator = "ID_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "ID_SEQ", sequenceName = "SEQ_BOOKINGS", allocationSize = 1)
+    private long id;
+    @Column(name = "start_date")
+    private LocalDateTime start;
+    @Column(name = "end_date")
+    private LocalDateTime end;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
-    private Item item;            // вещь, которую пользователь бронирует
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Item item;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "booker_id")
-    private User booker;          // пользователь, который осуществляет бронирование
-
+    private User booker;
     @Enumerated(EnumType.STRING)
-    private Status status = Status.WAITING;        // статус бронирования
+    private Status status = Status.WAITING;
 }
