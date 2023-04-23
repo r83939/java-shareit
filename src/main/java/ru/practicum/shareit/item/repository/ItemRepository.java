@@ -6,9 +6,25 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.List;
+
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-   // @Query("SELECT i.user_id FROM items i where i.id = :id")
-   // long findUserIdById(@Param("id") Long id);
+   @Query(value = "SELECT i.user_id FROM items i where i.id = :id",
+           nativeQuery = true)
+   long findUserIdById(@Param("id") Long id);
+
+   @Query(value = "SELECT * FROM items i " +
+           "WHERE i.available = :available " +
+           "AND (LOWER(i.name) like LOWER(concat('%', concat(:text, '%'))) OR LOWER(i.description) like LOWER(concat('%', concat(:text, '%')))) ",
+           nativeQuery = true)
+   List<Item> search(@Param("text") String text,
+                     @Param("available") boolean available);
+
+   @Query(value = "SELECT * FROM items i where i.user_id = :id ORDER BY i.id ASC ",
+           nativeQuery = true)
+   List<Item> findAllByOwner(@Param("id") Long id);
+
+   List<Item> findAllByRequestId(Long requestId);
 }

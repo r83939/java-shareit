@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.domain.validator.UserValidator;
 import ru.practicum.shareit.exception.DuplicateEmailException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidParameterException;
@@ -21,14 +22,19 @@ import java.util.stream.Collectors;
 public class UserServiceImpl {
     private final UserRepository userRepo;
     private final UserMapper userMapper;
+    private final UserValidator userValidator;
 
     @Autowired
-    public UserServiceImpl(@Qualifier("userRepository") UserRepository userRepo, UserMapper userMapper) {
+    public UserServiceImpl(@Qualifier("userRepository") UserRepository userRepo, UserMapper userMapper, UserValidator userValidator) {
         this.userRepo = userRepo;
         this.userMapper = userMapper;
+        this.userValidator = userValidator;
     }
 
-    public UserDto getUserById(long userId) {
+    public UserDto getUserById(long userId) throws EntityNotFoundException {
+        if (userRepo.findById(userId).isEmpty()) {
+            throw new EntityNotFoundException("Нет пользователя с id: " + userId);
+        }
         return userMapper.toUserDto(userRepo.findById(userId).get());
     }
 
@@ -38,16 +44,8 @@ public class UserServiceImpl {
                 .collect(Collectors.toList());
     }
 
-    public UserDto addUser(User user) throws DuplicateEmailException, InvalidParameterException {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new InvalidParameterException("поле email должно быть заполнено.");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            throw new InvalidParameterException("поле name должно быть заполнено.");
-        }
-        if (userRepo.existsByEmail(user.getEmail())) {
-            throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется");
-        }
+    public UserDto addUser(User user) throws InvalidParameterException {
+        userValidator.newUserValidate(user);
         return userMapper.toUserDto(userRepo.save(user));
     }
 
@@ -62,10 +60,9 @@ public class UserServiceImpl {
         if ((user.getName() == null || user.getName().isBlank())) {
             user.setName(updateUser.get().getName());
         }
-        if (!updateUser.get().getEmail().equals(user.getEmail()) && (userRepo.existsByEmail(user.getEmail()) != null)) {
+        if (!updateUser.get().getEmail().equals(user.getEmail()) && (userRepo.existsByEmail(user.getEmail()))) {
             throw new DuplicateEmailException("этот еmail: " + user.getEmail() + " уже используется другим пользователем");
         }
-
         return userMapper.toUserDto(userRepo.save(user));
     }
 
@@ -80,6 +77,4 @@ public class UserServiceImpl {
         userRepo.deleteById(userId);
         return userMapper.toUserDto(deleteUser.get());
     }
-
-
 }
