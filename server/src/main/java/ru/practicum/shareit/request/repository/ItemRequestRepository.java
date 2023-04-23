@@ -16,7 +16,7 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
              nativeQuery = true)
      List<ItemRequest> getAllNotOwnRequests(@Param("requester_id") long userId);
 
-     @Query(value = "SELECT * FROM requests r WHERE r.requester_id != :requester_id ORDER BY created DESC LIMIT :from, :size",
+     @Query(value = "SELECT * FROM requests r WHERE r.requester_id != :requester_id ORDER BY created DESC LIMIT :size OFFSET :from",
              nativeQuery = true)
      List<ItemRequest> getAllNotOwnRequestsWithPagination(@Param("requester_id") long userId,
                                                           @Param("from") int from,

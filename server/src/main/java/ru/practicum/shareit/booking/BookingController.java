@@ -35,7 +35,7 @@ public class BookingController {
     }
 
     @PostMapping()
-    public BookingResponceDto createBooking(@RequestHeader(value = USER_ID, required = true) Long userId,
+    public BookingResponceDto addBooking(@RequestHeader(value = USER_ID, required = true) Long userId,
                                             @Valid @RequestBody BookingRequestDto booking) throws EntityNotFoundException, InvalidParameterException {
 
         return bookingServiceImpl.addBooking(userId, booking);

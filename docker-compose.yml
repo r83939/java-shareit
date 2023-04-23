@@ -6,12 +6,13 @@ services:
     container_name: shareit-gateway
     ports:
       - "8080:8080"
-      - "7777:8888"
+      - "5004:8888"
     depends_on:
       - server
       - db
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
+      - TZ=Europe/Moscow
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8888
 
   server:
@@ -20,7 +21,7 @@ services:
     container_name: shareit-server
     ports:
       - "9090:9090"
-      - "5555:9999"
+      - "5005:9999"
     depends_on:
       - db
     environment:
@@ -28,9 +29,11 @@ services:
       - POSTGRES_DB=shareit_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - TZ=Europe/Moscow
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9999
   db:
     image: postgres:13.7-alpine
+    command: ["postgres", "-c", "log_statement=all"]
     container_name: shareit-db
     volumes:
       - /var/lib/postgresql/data/
@@ -40,3 +43,4 @@ services:
       - POSTGRES_DB=shareit_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - TZ=Europe/Moscow

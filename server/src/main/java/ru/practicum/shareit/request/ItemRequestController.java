@@ -25,14 +25,14 @@ public class ItemRequestController {
     }
 
     @PostMapping()
-    public ItemRequestResponceDto createItemRequestRequest(@RequestHeader(USER_ID) Long userId,
+    public ItemRequestResponceDto addItemRequest(@RequestHeader(USER_ID) Long userId,
                                                            @Valid @RequestBody ItemRequestRequestDto itemRequest) throws EntityNotFoundException {
 
         return itemRequestServiceImpl.addItemRequest(userId, itemRequest);
     }
 
     @GetMapping("/{requestId}")
-    public OwnItemRequestResponceDto getRequestById(@RequestHeader(USER_ID) Long userId,
+    public OwnItemRequestResponceDto getItemRequest(@RequestHeader(USER_ID) Long userId,
                                                        @PathVariable long requestId) throws EntityNotFoundException {
 
         return itemRequestServiceImpl.getItemRequest(userId, requestId);

@@ -8,10 +8,12 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.booking.dto.State;
 import ru.practicum.shareit.client.BaseClient;
+import ru.practicum.shareit.exception.InvalidStateBookingException;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class BookingClient extends BaseClient {
@@ -27,18 +29,20 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getBookingsByStatus(Long userId, BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> getBookings(Long userId, String bookingState, Integer from, Integer size) throws InvalidStateBookingException {
+        checkBookingStatus(bookingState);
         Map<String, Object> parameters = Map.of(
-                "state", state.name(),
+                "state", bookingState,
                 "from", from,
                 "size", size
         );
         return get("?state={state}&from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> getBookingsByOwnerAndStatus(Long userId, BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> getBookingsByOwnerAndStatus(Long userId, String bookingState, Integer from, Integer size) throws InvalidStateBookingException {
+        checkBookingStatus(bookingState);
         Map<String, Object> parameters = Map.of(
-                "state", state.name(),
+                "state", bookingState,
                 "from", from,
                 "size", size
         );
@@ -53,12 +57,15 @@ public class BookingClient extends BaseClient {
         return post("", userId, requestDto);
     }
 
-    public ResponseEntity<Object> updateBookingStatus(Long userId, Long bookingId, Boolean approved) {
+    public ResponseEntity<Object> approveBooking(Long userId, Long bookingId, Boolean approved) {
         Map<String, Object> parameters = Map.of("approved", approved);
         return patch("/" + bookingId + "?approved={approved}", userId, parameters, null);
     }
 
-    public void deleteBooking(Long bookingId) {
-        delete("/" + bookingId);
+    private void checkBookingStatus(String stateText) throws InvalidStateBookingException {
+        if (!Stream.of(State.values()).anyMatch(v -> v.name().equals(stateText))) {
+            throw new InvalidStateBookingException("Unknown state: UNSUPPORTED_STATUS");
+        }
     }
+
 }

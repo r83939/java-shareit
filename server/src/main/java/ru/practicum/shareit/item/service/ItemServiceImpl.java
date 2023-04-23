@@ -58,8 +58,10 @@ public class ItemServiceImpl {
         }
         SpecialBookingDto specialLastBooking;
         SpecialBookingDto specialNextBooking;
-        var lastBooking = bookingRepo.getLastBookingByItemId(itemId);
-        var nextBooking = bookingRepo.getNextBookingByItemId(itemId);
+        var lastBooking = bookingRepo.getLastBookingByItemId(itemId, LocalDateTime.now());
+        log.info("Текущее время для LastBooking " + LocalDateTime.now());
+        var nextBooking = bookingRepo.getNextBookingByItemId(itemId, LocalDateTime.now());
+        log.info("Текущее время для NextBooking " + LocalDateTime.now());
         if ((lastBooking != null) &&  (item.get().getOwner().getId() == userId) && !Status.REJECTED.equals(lastBooking.getStatus())) {
             specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
         } else {
@@ -92,8 +94,10 @@ public class ItemServiceImpl {
         for (Item item : itemRepo.findAllByOwner(userId, PageRequest.of(from, size))) {
             SpecialBookingDto specialLastBooking = SpecialBookingDto.builder().build();
             SpecialBookingDto specialNextBooking = SpecialBookingDto.builder().build();
-            var lastBooking = bookingRepo.getLastBookingByItemId(item.getId());
-            var nextBooking = bookingRepo.getNextBookingByItemId(item.getId());
+            var lastBooking = bookingRepo.getLastBookingByItemId(item.getId(), LocalDateTime.now());
+            log.info("Текущее время для LastBooking " + LocalDateTime.now());
+            var nextBooking = bookingRepo.getNextBookingByItemId(item.getId(), LocalDateTime.now());
+            log.info("Текущее время для NextBooking " + LocalDateTime.now());
             if (lastBooking != null && nextBooking != null) {
                 specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
                 specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
