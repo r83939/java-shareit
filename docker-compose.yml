@@ -9,7 +9,6 @@ services:
       - "5004:8888"
     depends_on:
       - server
-      - db
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
       - TZ=Europe/Moscow
