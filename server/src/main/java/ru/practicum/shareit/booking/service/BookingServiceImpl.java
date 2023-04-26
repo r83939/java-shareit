@@ -118,7 +118,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponceDto> getBookingsByUserIdAndState(Long userId, String state, Integer from, Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
+    public List<BookingResponceDto> getBookingsByUserIdAndState(Long userId, String state, Integer from, Integer size) throws EntityNotFoundException {
         if (userRepo.findById(userId).isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
