@@ -94,7 +94,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingResponceDto> getAllItemsByUserId(long userId, int from, int size) {
+    public List<ItemWithBookingResponceDto> getAllItemsByUserId(long userId, int from, int size)  {
+        try {
         List<Item> items = getItemsList(userId, from, size);
 
         List<Long> itemsIds = getItemsIdList(items);
@@ -127,6 +128,10 @@ public class ItemServiceImpl implements ItemService {
                     .build());
         }
         return responceDto;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     private List<Item> getItemsList(long userId, int from, int size) {

@@ -34,7 +34,7 @@ public class ItemController {
     @GetMapping()
     public List<ItemWithBookingResponceDto> getAllItem(@RequestHeader(USER_ID) Long userId,
                                                        @RequestParam(value = "from", defaultValue = "0") Integer from,
-                                                       @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                                       @RequestParam(value = "size", defaultValue = "10") Integer size)  {
 
         return itemService.getAllItemsByUserId(userId, from, size);
     }
