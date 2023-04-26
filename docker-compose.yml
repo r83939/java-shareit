@@ -11,7 +11,7 @@ services:
       - server
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
-#      - TZ=Europe/Moscow
+      - TZ=Europe/Moscow
 #     - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8888
 
   server:
@@ -28,7 +28,7 @@ services:
       - POSTGRES_DB=shareit_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-#     - TZ=Europe/Moscow
+      - TZ=Europe/Moscow
 #     - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9999
   db:
     image: postgres:13.7-alpine
@@ -42,4 +42,4 @@ services:
       - POSTGRES_DB=shareit_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-#      - TZ=Europe/Moscow
+      - TZ=Europe/Moscow
