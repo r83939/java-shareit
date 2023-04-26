@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
     private final UserMapper userMapper;
     private final UserValidator userValidator;
@@ -31,6 +31,7 @@ public class UserServiceImpl {
         this.userValidator = userValidator;
     }
 
+    @Override
     public UserDto getUserById(long userId) throws EntityNotFoundException {
         if (userRepo.findById(userId).isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
@@ -38,17 +39,20 @@ public class UserServiceImpl {
         return userMapper.toUserDto(userRepo.findById(userId).get());
     }
 
+    @Override
     public List<UserDto> getAllUsers() {
         return userRepo.findAll().stream()
                 .map(u -> userMapper.toUserDto(u))
                 .collect(Collectors.toList());
     }
 
+    @Override
     public UserDto addUser(User user) throws InvalidParameterException {
         userValidator.newUserValidate(user);
         return userMapper.toUserDto(userRepo.save(user));
     }
 
+    @Override
     public UserDto updateUser(User user) throws EntityNotFoundException, DuplicateEmailException {
         Optional<User> updateUser = userRepo.findById(user.getId());
         if (updateUser.isEmpty()) {
@@ -66,6 +70,7 @@ public class UserServiceImpl {
         return userMapper.toUserDto(userRepo.save(user));
     }
 
+    @Override
     public UserDto deleteUser(long userId) throws InvalidParameterException, EntityNotFoundException {
         if (userId <= 0) {
             throw new InvalidParameterException("id - должно быть целым числом, вы передали " +  userId);

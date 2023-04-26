@@ -7,6 +7,7 @@ import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidParameterException;
 import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
 import javax.validation.Valid;
@@ -17,18 +18,18 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private static final String USER_ID = "X-Sharer-User-Id";
-    private final ItemServiceImpl itemServiceImpl;
+    private final ItemService itemService;
 
     @Autowired
-    public ItemController(ItemServiceImpl itemServiceImpl) {
-        this.itemServiceImpl = itemServiceImpl;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @GetMapping("/{itemId}")
     public ItemWithBookingResponceDto getItem(@RequestHeader(USER_ID) Long userId,
                                               @PathVariable long itemId) throws EntityNotFoundException {
 
-        return itemServiceImpl.getItemById(userId, itemId);
+        return itemService.getItemById(userId, itemId);
     }
 
     @GetMapping()
@@ -36,7 +37,7 @@ public class ItemController {
                                                        @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
-        return itemServiceImpl.getAllItemsByUserId(userId, from, size);
+        return itemService.getAllItemsByUserId(userId, from, size);
     }
 
     @GetMapping("/search")
@@ -45,14 +46,14 @@ public class ItemController {
                                              @RequestParam(value = "from", defaultValue = "0") Integer from,
                                              @RequestParam(value = "size", defaultValue = "10") Integer size) throws EntityNotFoundException {
 
-        return itemServiceImpl.searchItems(userId, text, from, size);
+        return itemService.searchItems(userId, text, from, size);
     }
 
     @PostMapping()
     public ItemResponceDto createItem(@RequestHeader(value = USER_ID, required = true) Long userId,
                               @Valid @RequestBody ItemRequestDto item) throws EntityNotFoundException {
 
-        return itemServiceImpl.addItem(userId, item);
+        return itemService.addItem(userId, item);
     }
 
     @PatchMapping("/{id}")
@@ -61,7 +62,7 @@ public class ItemController {
                               @RequestBody ItemRequestDto item) throws EntityNotFoundException, AccessDeniedException {
 
         item.setId(id);
-        return itemServiceImpl.updateItem(userId, item);
+        return itemService.updateItem(userId, item);
     }
 
 
@@ -71,6 +72,6 @@ public class ItemController {
     public CommentResponceDto addComment(@RequestHeader(USER_ID) long userId,
                                          @PathVariable long itemId,
                                          @Valid @RequestBody CommentRequestDto comment) throws EntityNotFoundException, InvalidParameterException {
-        return itemServiceImpl.addComment(userId, itemId, comment);
+        return itemService.addComment(userId, itemId, comment);
     }
 }

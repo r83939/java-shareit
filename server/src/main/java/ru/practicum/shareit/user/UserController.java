@@ -8,6 +8,7 @@ import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidParameterException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import javax.validation.Valid;
@@ -16,38 +17,38 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserServiceImpl userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/{id}")
     public UserDto getUser(@PathVariable long id) throws EntityNotFoundException {
 
-        return userServiceImpl.getUserById(id);
+        return userService.getUserById(id);
     }
 
     @GetMapping()
     public List<UserDto> getAllUsers() {
-        return userServiceImpl.getAllUsers();
+        return userService.getAllUsers();
     }
 
     @PostMapping()
     public UserDto createUser(@RequestBody  @Valid User user) throws InvalidParameterException {
-        return userServiceImpl.addUser(user);
+        return userService.addUser(user);
     }
 
     @PatchMapping("/{id}")
     public UserDto updateUser(@PathVariable Long id,
                                @RequestBody @Valid User user) throws EntityNotFoundException, DuplicateEmailException {
         user.setId(id);
-        return  userServiceImpl.updateUser(user);
+        return  userService.updateUser(user);
     }
 
     @DeleteMapping("/{id}")
     public UserDto deleteUser(@PathVariable Long id) throws InvalidParameterException, EntityNotFoundException {
-        return userServiceImpl.deleteUser(id);
+        return userService.deleteUser(id);
     }
 }

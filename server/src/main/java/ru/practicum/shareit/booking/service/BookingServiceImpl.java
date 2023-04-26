@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 
 @Service
 @Slf4j
-public class BookingServiceImpl {
+public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepo;
     private final UserRepository userRepo;
     private final ItemRepository itemRepo;
@@ -45,6 +45,7 @@ public class BookingServiceImpl {
         this.bookingMapper = bookingMapper;
     }
 
+    @Override
     public BookingResponceDto getBookingById(long userId, long bookingId) throws EntityNotFoundException {
 
         Optional<Booking> booking = bookingRepo.findById(bookingId);
@@ -57,6 +58,7 @@ public class BookingServiceImpl {
         throw new EntityNotFoundException("Вы не можете просматривать это бронирование");
     }
 
+    @Override
     public BookingResponceDto addBooking(Long userId, BookingRequestDto bookingRequestDto) throws EntityNotFoundException, InvalidParameterException {
 
         Optional<User> user = userRepo.findById(userId);
@@ -88,6 +90,7 @@ public class BookingServiceImpl {
         return BookingMapper.toBookingResponceDto(bookingRepo.save(booking));
     }
 
+    @Override
     public BookingResponceDto approveBooking(Long userId, long bookingId, String approved) throws EntityNotFoundException, InvalidParameterException {
 
         boolean isApproved = ("true").equals(approved); // сюда придут только "true" или "false", проверка на другие варианты будет в gateway
@@ -115,6 +118,7 @@ public class BookingServiceImpl {
         return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
     }
 
+    @Override
     public List<BookingResponceDto> getBookingsByUserIdAndState(Long userId, String state, Integer from, Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
         if (userRepo.findById(userId).isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
@@ -161,6 +165,7 @@ public class BookingServiceImpl {
             return bookingResponceDtos;
     }
 
+    @Override
     public List<BookingResponceDto> getOwnBookingsByUserId(Long userId, String state, Integer from, Integer size) throws EntityNotFoundException {
         if (userRepo.findById(userId).isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);

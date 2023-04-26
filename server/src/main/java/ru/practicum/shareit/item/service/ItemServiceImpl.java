@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
-public class ItemServiceImpl {
+public class ItemServiceImpl implements ItemService {
 
     private final BookingRepository bookingRepo;
     private final ItemRepository itemRepo;
@@ -56,6 +56,7 @@ public class ItemServiceImpl {
         this.itemRequestRepo = itemRequestRepo;
     }
 
+    @Override
     public ItemWithBookingResponceDto getItemById(long userId, long itemId) throws EntityNotFoundException {
         Optional<Item> item = itemRepo.findById(itemId);
         if (item.isEmpty()) {
@@ -92,6 +93,7 @@ public class ItemServiceImpl {
                 .build();
     }
 
+    @Override
     public List<ItemWithBookingResponceDto> getAllItemsByUserId(long userId, int from, int size) {
         List<Item> items = getItemsList(userId, from, size);
 
@@ -144,7 +146,8 @@ public class ItemServiceImpl {
                 .collect(toList());
     }
 
-    public ItemResponceDto addItem(long userId,  ItemRequestDto itemRequestDto) throws EntityNotFoundException {
+    @Override
+    public ItemResponceDto addItem(long userId, ItemRequestDto itemRequestDto) throws EntityNotFoundException {
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
@@ -162,6 +165,7 @@ public class ItemServiceImpl {
         return itemMapper.toItemResponceDto(savedItem, new ArrayList<>());
     }
 
+    @Override
     public ItemResponceDto updateItem(long userId, ItemRequestDto itemRequestDto) throws EntityNotFoundException, AccessDeniedException {
         Optional<Item> updateItem = itemRepo.findById(itemRequestDto.getId());
         if (updateItem.isEmpty()) {
@@ -189,7 +193,8 @@ public class ItemServiceImpl {
         return itemMapper.toItemResponceDto(apdatedItem, comments);
     }
 
-    public List<ItemResponceDto> searchItems(Long userId, String text,int from, int size) throws EntityNotFoundException {
+    @Override
+    public List<ItemResponceDto> searchItems(Long userId, String text, int from, int size) throws EntityNotFoundException {
         if (!userRepo.existsById(userId)) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
@@ -201,13 +206,14 @@ public class ItemServiceImpl {
                 .collect(toList());
     }
 
-    List<CommentResponceDto> getCommentResponceDtos(long itemId) {
+    private List<CommentResponceDto> getCommentResponceDtos(long itemId) {
         return commentRepo.findAllByItemId(itemId).stream()
                 .map(c -> commentMapper.toCommentResponceDto(c))
                 .collect(toList());
     }
 
-    public CommentResponceDto addComment(long userId, long itemId,CommentRequestDto commentRequestDto) throws EntityNotFoundException, InvalidParameterException {
+    @Override
+    public CommentResponceDto addComment(long userId, long itemId, CommentRequestDto commentRequestDto) throws EntityNotFoundException, InvalidParameterException {
 
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {

@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
-public class ItemRequestServiceImpl {
+public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final ItemRequestRepository itemRequestRepo;
     private final ItemRequestMapper itemRequestMapper;
@@ -42,6 +42,7 @@ public class ItemRequestServiceImpl {
         this.itemRepo = itemRepo;
     }
 
+    @Override
     public ItemRequestResponceDto addItemRequest(Long userId, ItemRequestRequestDto itemRequestRequestDto) throws EntityNotFoundException {
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
@@ -55,6 +56,7 @@ public class ItemRequestServiceImpl {
         return itemRequestMapper.toItemRequestResponceDto(addedItemRequest);
     }
 
+    @Override
     public List<OwnItemRequestResponceDto> getItemRequests(Long userId, Integer from, Integer size) throws EntityNotFoundException, InvalidParameterException {
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
@@ -92,6 +94,7 @@ public class ItemRequestServiceImpl {
                 .collect(toList());
     }
 
+    @Override
     public List<OwnItemRequestResponceDto> getOwnItemRequests(Long userId) throws EntityNotFoundException {
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
@@ -109,6 +112,7 @@ public class ItemRequestServiceImpl {
                 .collect(toList());
     }
 
+    @Override
     public OwnItemRequestResponceDto getItemRequest(Long userId, long requestId) throws EntityNotFoundException {
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
