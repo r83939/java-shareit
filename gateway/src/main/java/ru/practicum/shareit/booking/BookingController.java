@@ -14,7 +14,7 @@ import ru.practicum.shareit.exception.InvalidStateBookingException;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 @Slf4j

@@ -16,7 +16,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Collections;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
 @Slf4j

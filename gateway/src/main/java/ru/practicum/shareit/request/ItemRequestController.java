@@ -13,7 +13,7 @@ import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/requests")
 @Slf4j
