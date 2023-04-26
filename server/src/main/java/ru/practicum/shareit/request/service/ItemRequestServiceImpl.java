@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.InvalidParameterException;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.*;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -83,7 +81,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     private List<ItemDto> toItemDtoList(List<Item> items) {
         return items.stream()
-                .map(i-> ItemRequestMapper.toItemDto(i))
+                .map(i -> ItemRequestMapper.toItemDto(i))
                 .collect(toList());
     }
 

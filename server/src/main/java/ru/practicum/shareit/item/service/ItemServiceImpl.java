@@ -142,7 +142,7 @@ public class ItemServiceImpl implements ItemService {
     private List<CommentResponceDto> toCommentResponceDtoList(List<Comment> comments) {
         return comments
                 .stream()
-                .map(c-> ItemMapper.commentResponceDto(c))
+                .map(c -> ItemMapper.commentResponceDto(c))
                 .collect(toList());
     }
 

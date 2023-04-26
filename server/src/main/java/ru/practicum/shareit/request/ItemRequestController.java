@@ -8,7 +8,6 @@ import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestResponceDto;
 import ru.practicum.shareit.request.dto.OwnItemRequestResponceDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 
 import javax.validation.Valid;
 import java.util.List;
