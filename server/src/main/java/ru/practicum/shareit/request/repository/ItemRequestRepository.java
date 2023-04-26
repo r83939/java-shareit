@@ -21,4 +21,5 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
      List<ItemRequest> getAllNotOwnRequestsWithPagination(@Param("requester_id") long userId,
                                                           @Param("from") int from,
                                                           @Param("size") int size);
+
 }

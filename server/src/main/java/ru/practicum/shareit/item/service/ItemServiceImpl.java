@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.AccessDeniedException;
@@ -22,8 +23,15 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.function.Function;
+import static java.util.stream.Collectors.*;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+
+
 
 @Service
 @Slf4j
@@ -37,8 +45,6 @@ public class ItemServiceImpl {
     private final CommentMapper commentMapper;
     private final ItemRequestRepository itemRequestRepo;
 
-
-
     @Autowired
     public ItemServiceImpl(BookingRepository bookingRepo, ItemRepository itemRepo, ItemMapper itemMapper, UserRepository userRepo, CommentRepository commentRepo, CommentMapper commentMapper, ItemRequestRepository itemRequestRepo) {
         this.bookingRepo = bookingRepo;
@@ -48,7 +54,6 @@ public class ItemServiceImpl {
         this.commentRepo = commentRepo;
         this.commentMapper = commentMapper;
         this.itemRequestRepo = itemRequestRepo;
-
     }
 
     public ItemWithBookingResponceDto getItemById(long userId, long itemId) throws EntityNotFoundException {
@@ -59,9 +64,7 @@ public class ItemServiceImpl {
         SpecialBookingDto specialLastBooking;
         SpecialBookingDto specialNextBooking;
         var lastBooking = bookingRepo.getLastBookingByItemId(itemId, LocalDateTime.now());
-        log.info("Текущее время для LastBooking " + LocalDateTime.now());
         var nextBooking = bookingRepo.getNextBookingByItemId(itemId, LocalDateTime.now());
-        log.info("Текущее время для NextBooking " + LocalDateTime.now());
         if ((lastBooking != null) &&  (item.get().getOwner().getId() == userId) && !Status.REJECTED.equals(lastBooking.getStatus())) {
             specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
         } else {
@@ -74,7 +77,7 @@ public class ItemServiceImpl {
         }
         List<CommentResponceDto> comments = commentRepo.findAllByItemId(itemId).stream()
                 .map(c -> commentMapper.toCommentResponceDto(c))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return ItemWithBookingResponceDto.builder()
                 .id(item.get().getId())
@@ -90,37 +93,55 @@ public class ItemServiceImpl {
     }
 
     public List<ItemWithBookingResponceDto> getAllItemsByUserId(long userId, int from, int size) {
+        List<Item> items = getItemsList(userId, from, size);
+
+        List<Long> itemsIds = getItemsIdList(items);
+
+        Map<Item, List<Comment>> commentsMap = commentRepo.findAllByItemIds(itemsIds)
+                .stream()
+                .collect(groupingBy(Comment::getItem, toList()));
+
+        Map<Item, Booking> lastBookingsMap = bookingRepo.getLastBookingByItemIds(itemsIds, LocalDateTime.now())
+                .stream()
+                .collect(toMap(Booking::getItem, Function.identity(), (o, n) -> o));
+
+        Map<Item, Booking> nextBookingsMap = bookingRepo.getNextBookingByItemIds(itemsIds, LocalDateTime.now())
+                .stream()
+                .collect(toMap(Booking::getItem, Function.identity(), (o, n) -> o));
+
         List<ItemWithBookingResponceDto> responceDto = new ArrayList<>();
-        for (Item item : itemRepo.findAllByOwner(userId, PageRequest.of(from, size))) {
-            SpecialBookingDto specialLastBooking = SpecialBookingDto.builder().build();
-            SpecialBookingDto specialNextBooking = SpecialBookingDto.builder().build();
-            var lastBooking = bookingRepo.getLastBookingByItemId(item.getId(), LocalDateTime.now());
-            log.info("Текущее время для LastBooking " + LocalDateTime.now());
-            var nextBooking = bookingRepo.getNextBookingByItemId(item.getId(), LocalDateTime.now());
-            log.info("Текущее время для NextBooking " + LocalDateTime.now());
-            if (lastBooking != null && nextBooking != null) {
-                specialLastBooking = itemMapper.toSpecialBookingDto(lastBooking);
-                specialNextBooking = itemMapper.toSpecialBookingDto(nextBooking);
-            } else {
-                specialLastBooking = null;
-                specialNextBooking = null;
-            }
-            List<CommentResponceDto> comments = commentRepo.findAllByItemId(item.getId()).stream()
-                    .map(c -> commentMapper.toCommentResponceDto(c))
-                    .collect(Collectors.toList());
+
+        for (Item item : items) {
             responceDto.add(ItemWithBookingResponceDto.builder()
                     .id(item.getId())
                     .name(item.getName())
                     .description(item.getDescription())
                     .available(item.getAvailable())
                     .owner(item.getOwner())
-                    .lastBooking(specialLastBooking)
-                    .nextBooking(specialNextBooking)
+                    .lastBooking(itemMapper.toSpecialBookingDto(lastBookingsMap.get(item)))
+                    .nextBooking(itemMapper.toSpecialBookingDto(nextBookingsMap.get(item)))
                     .request(item.getRequest() != null ? item.getRequest().getId() : null)
-                    .comments(comments)
+                    .comments(toCommentResponceDtoList(commentsMap.getOrDefault(item, List.of())))
                     .build());
         }
-        return  responceDto;
+        return responceDto;
+    }
+
+    private List<Item> getItemsList(long userId, int from, int size) {
+        return itemRepo.findAllByOwner(userId, PageRequest.of(from, size));
+    }
+
+    private List<Long> getItemsIdList(List<Item> items) {
+        return items.stream()
+                .map(Item::getId)
+                .collect(toList());
+    }
+
+    private List<CommentResponceDto> toCommentResponceDtoList(List<Comment> comments) {
+        return comments
+                .stream()
+                .map(c-> ItemMapper.commentResponceDto(c))
+                .collect(toList());
     }
 
     public ItemResponceDto addItem(long userId,  ItemRequestDto itemRequestDto) throws EntityNotFoundException {
@@ -163,7 +184,7 @@ public class ItemServiceImpl {
         Item apdatedItem = itemRepo.save(updateItem.get());
         List<CommentResponceDto> comments = commentRepo.findAllByItemId(itemRequestDto.getId()).stream()
                 .map(c -> commentMapper.toCommentResponceDto(c))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return itemMapper.toItemResponceDto(apdatedItem, comments);
     }
@@ -177,13 +198,13 @@ public class ItemServiceImpl {
         }
         return itemRepo.search(text, true, PageRequest.of(from, size)).stream()
                 .map(i -> itemMapper.toItemResponceDto(i, getCommentResponceDtos(i.getId())))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     List<CommentResponceDto> getCommentResponceDtos(long itemId) {
         return commentRepo.findAllByItemId(itemId).stream()
                 .map(c -> commentMapper.toCommentResponceDto(c))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public CommentResponceDto addComment(long userId, long itemId,CommentRequestDto commentRequestDto) throws EntityNotFoundException, InvalidParameterException {

@@ -89,6 +89,9 @@ public class BookingServiceImpl {
     }
 
     public BookingResponceDto approveBooking(Long userId, long bookingId, String approved) throws EntityNotFoundException, InvalidParameterException {
+
+        boolean isApproved = ("true").equals(approved); // сюда придут только "true" или "false", проверка на другие варианты будет в gateway
+
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
@@ -100,32 +103,23 @@ public class BookingServiceImpl {
         if (booking.get().getStatus().equals(Status.APPROVED) && approved.equals("true")) {
             throw new InvalidParameterException("Статус бронирования уже : " + approved);
         }
-
         if (itemRepo.findUserIdById(booking.get().getItem().getId()) != userId) {
            throw new EntityNotFoundException("Вы не можете изменить статус этого бронирования");
         }
-        if (approved.equals("true")) {
+        if (isApproved) {
             booking.get().setStatus(Status.APPROVED);
-            return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
         }
-        if (approved.equals("false")) {
+        else {
             booking.get().setStatus(Status.REJECTED);
-            return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
         }
-        throw new InvalidParameterException("Указан неверный параметр: approved");
+        return BookingMapper.toBookingResponceDto(bookingRepo.save(booking.get()));
     }
 
     public List<BookingResponceDto> getBookingsByUserIdAndState(Long userId, String state, Integer from, Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
         if (userRepo.findById(userId).isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
-        if (!Stream.of(State.values()).anyMatch(v -> v.name().equals(state))) {
-            throw new InvalidStateBookingException("Unknown state: UNSUPPORTED_STATUS");
-        }
 
-        if (from < 0 || size <= 0) {
-                throw new InvalidParameterException("Не верно заданы значения пагинации");
-            }
         List<BookingResponceDto> bookingResponceDtos = new ArrayList<>();
         switch (State.valueOf(state)) {
                 case ALL:
@@ -167,18 +161,13 @@ public class BookingServiceImpl {
             return bookingResponceDtos;
     }
 
-    public List<BookingResponceDto> getOwnBookingsByUserId(Long userId, String state, Integer from, Integer size) throws InvalidParameterException, EntityNotFoundException, InvalidStateBookingException {
+    public List<BookingResponceDto> getOwnBookingsByUserId(Long userId, String state, Integer from, Integer size) throws EntityNotFoundException {
         if (userRepo.findById(userId).isEmpty()) {
             throw new EntityNotFoundException("Нет пользователя с id: " + userId);
         }
-        if (from < 0 || size <= 0) {
-            throw new InvalidParameterException("Не верно заданы значения пагинации");
-        }
-        if (!Stream.of(State.values()).anyMatch(v -> v.name().equals(state))) {
-            throw new InvalidStateBookingException("Unknown state: UNSUPPORTED_STATUS");
-        } else {
-            List<BookingResponceDto> bookingResponceDtos = new ArrayList<>();
-            switch (State.valueOf(state)) {
+
+        List<BookingResponceDto> bookingResponceDtos = new ArrayList<>();
+        switch (State.valueOf(state)) {
                 case ALL:
                     bookingResponceDtos = bookingRepo.findBookingByOwnerIdWithPagination(userId,from, size).stream()
                             .map(b -> bookingMapper.toBookingResponceDto(b))
@@ -215,7 +204,6 @@ public class BookingServiceImpl {
                             .collect(Collectors.toList());
                     break;
             }
-            return bookingResponceDtos;
-        }
+        return bookingResponceDtos;
     }
 }

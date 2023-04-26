@@ -43,10 +43,22 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Booking getLastBookingByItemId(@Param("item_id") Long itemId, LocalDateTime now);
 
     @Query(value = "SELECT * FROM bookings b " +
+            "WHERE item_id IN :itemsIds " +
+            "AND start_date < :now " +
+            "ORDER BY start_date DESC LIMIT 1", nativeQuery = true)
+    List<Booking> getLastBookingByItemIds(@Param("itemsIds") List<Long> itemsIds, LocalDateTime now);
+
+    @Query(value = "SELECT * FROM bookings b " +
             "WHERE item_id = :item_id " +
             "AND start_date > :now " +
             "ORDER BY start_date ASC LIMIT 1", nativeQuery = true)
     Booking getNextBookingByItemId(@Param("item_id") Long itemId, LocalDateTime now);
+
+    @Query(value = "SELECT * FROM bookings b " +
+            "WHERE item_id IN :itemsIds " +
+            "AND start_date > :now " +
+            "ORDER BY start_date ASC LIMIT 1", nativeQuery = true)
+    List<Booking> getNextBookingByItemIds(@Param("itemsIds") List<Long> itemsIds, LocalDateTime now);
 
     @Query(value = "SELECT COUNT (*) FROM bookings b " +
             "WHERE b.booker_id = :user_id " +
