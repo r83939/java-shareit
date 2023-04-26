@@ -3,14 +3,13 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.domain.validator.Create;
 import ru.practicum.shareit.domain.validator.Update;
 import ru.practicum.shareit.user.dto.UserRequestDto;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @Slf4j
