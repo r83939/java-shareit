@@ -12,7 +12,7 @@ services:
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
 #      - TZ=Europe/Moscow
-#     - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8888
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8888
 
   server:
     build: server
@@ -29,7 +29,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 #      - TZ=Europe/Moscow
-#     - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9999
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9999
   db:
     image: postgres:13.7-alpine
 #    command: ["postgres", "-c", "log_statement=all"]
