@@ -99,7 +99,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("#1#");
         List<Item> items = getItemsList(userId, from, size);
 
-        log.info("#2#" +items);
+        log.info("#2#" + items);
         List<Long> itemsIds = getItemsIdList(items);
 
         log.info("#3#" + itemsIds);
