@@ -96,24 +96,31 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemWithBookingResponceDto> getAllItemsByUserId(long userId, int from, int size)  {
 
+        log.info("#1#");
         List<Item> items = getItemsList(userId, from, size);
 
+        log.info("#2#" +items);
         List<Long> itemsIds = getItemsIdList(items);
 
+        log.info("#3#" + itemsIds);
         Map<Item, List<Comment>> commentsMap = commentRepo.findAllByItemIds(itemsIds)
                 .stream()
                 .collect(groupingBy(Comment::getItem, toList()));
 
+        log.info("#4#" + commentsMap);
         Map<Item, Booking> lastBookingsMap = bookingRepo.getLastBookingByItemIds(itemsIds, LocalDateTime.now())
                 .stream()
                 .collect(toMap(Booking::getItem, Function.identity(), (o, n) -> o));
 
+        log.info("#5#" + lastBookingsMap);
         Map<Item, Booking> nextBookingsMap = bookingRepo.getNextBookingByItemIds(itemsIds, LocalDateTime.now())
                 .stream()
                 .collect(toMap(Booking::getItem, Function.identity(), (o, n) -> o));
 
+        log.info("#6#" + nextBookingsMap);
         List<ItemWithBookingResponceDto> responceDto = new ArrayList<>();
 
+        log.info("#7#" + responceDto);
         for (Item item : items) {
             responceDto.add(ItemWithBookingResponceDto.builder()
                     .id(item.getId())
@@ -121,17 +128,36 @@ public class ItemServiceImpl implements ItemService {
                     .description(item.getDescription())
                     .available(item.getAvailable())
                     .owner(item.getOwner())
-                    .lastBooking(itemMapper.toSpecialBookingDto(lastBookingsMap.get(item)))
-                    .nextBooking(itemMapper.toSpecialBookingDto(nextBookingsMap.get(item)))
+                    .lastBooking(getSpecialLastBookingDto(item, lastBookingsMap))
+                    .nextBooking(getSpecialNextBookingDto(item, nextBookingsMap))
                     .request(item.getRequest() != null ? item.getRequest().getId() : null)
                     .comments(toCommentResponceDtoList(commentsMap.getOrDefault(item, List.of())))
                     .build());
         }
+        log.info("#7#" + responceDto);
         return responceDto;
     }
 
+    private SpecialBookingDto getSpecialLastBookingDto(Item item, Map<Item, Booking> lastBookingsMap) {
+        var t = lastBookingsMap.get(item);
+        var g = lastBookingsMap.containsKey(item);
+        if (lastBookingsMap.containsKey(item)) {
+            return itemMapper.toSpecialBookingDto(lastBookingsMap.get(item));
+        } else return null;
+
+    }
+
+    private SpecialBookingDto getSpecialNextBookingDto(Item item, Map<Item, Booking> nextBookingsMap) {
+        if (nextBookingsMap.containsKey(item)) {
+            return itemMapper.toSpecialBookingDto(nextBookingsMap.get(item));
+        } else return null;
+
+    }
+
     private List<Item> getItemsList(long userId, int from, int size) {
-        return itemRepo.findAllByOwner(userId, PageRequest.of(from, size));
+        List<Item> items =  itemRepo.findAllByOwnerId(userId, PageRequest.of(from, size));
+        log.info("#1.1#" + items);
+        return items;
     }
 
     private List<Long> getItemsIdList(List<Item> items) {

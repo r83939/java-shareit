@@ -26,7 +26,12 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
    @Query(value = "SELECT * FROM items i where i.user_id = :id ORDER BY i.id ASC ",
            nativeQuery = true)
-   List<Item> findAllByOwner(@Param("id") Long id, PageRequest pageRequest);
+   List<Item> findAllByOwner1(@Param("id") Long id, PageRequest pageRequest);
+
+   @Query("SELECT i FROM Item i " +
+           "WHERE i.owner.id = :userId " +
+           "ORDER BY i.id")
+   List<Item> findAllByOwnerId(Long userId, PageRequest pageRequest);
 
    List<Item> findAllByRequestId(Long requestId);
 
