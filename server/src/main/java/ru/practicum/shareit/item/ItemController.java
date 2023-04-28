@@ -65,8 +65,6 @@ public class ItemController {
     }
 
 
-
-
     @PostMapping("/{itemId}/comment")
     public CommentResponceDto addComment(@RequestHeader(USER_ID) long userId,
                                          @PathVariable long itemId,
